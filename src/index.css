@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.formulario-label {
+    @apply block text-sm font-medium text-laranjajava;
+}
+
+.formulario-campo {
+    @apply w-full mt-1 p-2 border border-laranjajava rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400;
+}
+
+.navbar {
+    @apply flex min-h-screen bg-preto;
+}
+
+.item-lista {
+    @apply p-3 border font-medium text-laranjajava;
+}
+
+.item-lista-header {
+    @apply pb-3 pr-3 pl-3 pt-1 border-b text-lg font-bold text-azuljava;
+}
