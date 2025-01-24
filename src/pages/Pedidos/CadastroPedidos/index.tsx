@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import NavBar from "../../components/NavBar";
-import FormularioCadastroPedidos from "../../components/FormularioCadastroPedidos";
+import NavBar from "../../../components/NavBar";
+import FormularioCadastroPedidos from "../../../components/FormularioCadastroPedidos";
 
 const CadastroPedidos = () => {
   const [clientes, setClientes] = useState<any[]>([]); // Dados dos clientes

@@ -1,17 +1,31 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 
-function NavBar() {
+interface NavBarListagemProps {
+  onToggle: (isOpen: boolean) => void;
+}
+
+function NavBarListagem({ onToggle }: NavBarListagemProps) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const router = useRouter();
+
+  const handleMouseEnter = () => {
+    setIsNavOpen(true);
+    onToggle(true); // Informa ao layout que a navbar está aberta
+  };
+
+  const handleMouseLeave = () => {
+    setIsNavOpen(false);
+    onToggle(false); // Informa ao layout que a navbar está fechada
+  };
 
   return (
     <div
       className={`${
         isNavOpen ? "w-64" : "w-16"
-      } bg-azuljava text-white transition-all duration-300 rounded-r-lg`}
-      onMouseEnter={() => setIsNavOpen(true)}
-      onMouseLeave={() => setIsNavOpen(false)}
+      } fixed top-0 left-0 h-full bg-azuljava text-white transition-all duration-500 rounded-r-lg`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
@@ -30,7 +44,7 @@ function NavBar() {
               {isNavOpen && "Clientes"}
             </a>
             {isNavOpen && (
-              <div className="pl-6">
+              <div className="pl-6 transition-opacity duration-500 opacity-100">
                 <a 
                 onClick={() => router.navigate({ to: "/listagem-clientes" })}
                 className="block mt-1 px-4 py-2 text-base hover:text-laranjajava cursor-pointer">
@@ -92,4 +106,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;
+export default NavBarListagem;

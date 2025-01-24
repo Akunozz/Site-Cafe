@@ -1,5 +1,5 @@
-import NavBar from "../../components/NavBar";
-import FormularioCadastroBebidas from "../../components/FormularioCadastroBebidas";
+import NavBar from "../../../components/NavBar";
+import FormularioCadastroBebidas from "../../../components/FormularioCadastroBebidas";
 
 function CadastroBebidas() {
   const handleFormSubmit = (data: any) => {

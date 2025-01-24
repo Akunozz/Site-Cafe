@@ -4,7 +4,7 @@ interface IBebida {
     preco: number,
     imagem: string,
     quantidade: number,
-    status: "ATIVO" | "INATIVO"
+    status: "Ativo" | "Inativado"
 }
 
 export default IBebida;

@@ -1,5 +1,5 @@
-import NavBar from "../../components/NavBar";
-import FormularioCadastroCliente from "../../components/FormularioCadastroCliente";
+import NavBar from "../../../components/NavBar";
+import FormularioCadastroCliente from "../../../components/FormularioCadastroCliente";
 
 function TelaCadastro() {
   return (

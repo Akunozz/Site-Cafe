@@ -49,4 +49,4 @@ class SetorService extends ApiService<ISetor> {
 
 }
 
-export const setorService = new SetorService();
+export default new SetorService();

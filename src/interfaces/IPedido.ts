@@ -1,9 +1,9 @@
 interface IPedido {
-    id: number;
+    id: string;
     bebida_id: number;
     cliente_id: number;
-    unitario: string;
-    total: string;
+    unitario: number;
+    total: number;
     data_compra: string;
     quantidade: number;
     }

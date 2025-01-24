@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Botao from "../Botao";
 
@@ -13,6 +13,7 @@ type FormularioLoginProps = {
 
 const FormularioLogin: React.FC<FormularioLoginProps> = ({ onSubmit }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar a senha
 
   return (
     <form 
@@ -37,12 +38,24 @@ const FormularioLogin: React.FC<FormularioLoginProps> = ({ onSubmit }) => {
         <label htmlFor="password" className="formulario-label">Senha:</label>
         <input
           id="password"
-          type="password"
+          type={showPassword ? "text" : "password"} // Alterna entre texto e senha
           {...register("password", { required: "A senha é obrigatória." })}
           placeholder="Digite sua senha"
           className="formulario-campo"
         />
         {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>}
+      </div>
+
+      {/* Checkbox para mostrar/ocultar senha */}
+      <div className="mb-6 flex items-center">
+        <input
+          id="show-password"
+          type="checkbox"
+          checked={showPassword}
+          onChange={() => setShowPassword((prev) => !prev)} // Alterna o estado
+          className="mr-2"
+        />
+        <label htmlFor="show-password" className="text-sm">Mostrar senha</label>
       </div>
 
       {/* Botão de login */}
