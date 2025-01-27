@@ -4,6 +4,7 @@ import Tabela from "../../../components/Tabela";
 import pessoaService from "../../../services/PessoaService";
 import IPessoa from "../../../interfaces/IPessoa";
 import Alterar from "../../../components/Alterar";
+import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
@@ -57,7 +58,7 @@ function ListagemClientes() {
       <td className="item-lista">{cliente.nome}</td>
       <td className="item-lista">{cliente.setor.nome}</td>
       <td className="item-lista">
-        <Alterar enderecoAdicionar="/cadastro-cliente"
+        <Alterar
          rotaEdicao="/pessoas"
          idItem={cliente.id}
        onExcluir={() => excluirCliente(cliente)} /> 

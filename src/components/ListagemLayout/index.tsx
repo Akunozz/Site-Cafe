@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import NavBarListagem from "../NavBarListagem";
 import Filtro from "../Filtro";
+import Adicionar from "../BotaoAdicionar";
 
 
 interface ListagemLayoutProps {
@@ -25,6 +26,9 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
         <h1 className="text-4xl font-bold text-white mb-4">{titulo}</h1>
         <div className="mt-5 mb-2 w-1/5">
           <Filtro onFilterChange={onFilterChange} />
+          <div className="absolute right-10">
+          <Adicionar enderecoAdicionar="/cadastro-cliente"/>
+          </div>
         </div>
         <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">
           {children}

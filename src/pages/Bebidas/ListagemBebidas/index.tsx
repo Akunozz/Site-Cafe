@@ -4,6 +4,7 @@ import Tabela from "../../../components/Tabela";
 import bebidaService from "../../../services/BebidaService";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar";
+import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
@@ -76,7 +77,6 @@ function ListagemBebidas() {
       </td>
       <td className="item-lista">
         <Alterar
-          enderecoAdicionar="/cadastro-bebidas"
           rotaEdicao="/bebidas/"
           idItem={bebida.id}
           onExcluir={() => excluirBebida(bebida)}

@@ -8,6 +8,7 @@ import IPedido from "../../../interfaces/IPedido";
 import IPessoa from "../../../interfaces/IPessoa";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar";
+import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
@@ -88,14 +89,7 @@ function ListagemPedido() {
   }
 
   const colunas = [
-    "Pedido ID",
-    "Cliente",
-    "Bebida",
-    "Valor Unitário",
-    "Quantidade",
-    "Total",
-    "Data de Compra",
-    "Alterar",
+    "Pedido ID", "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar", "Adicioanr"
   ];
   const renderLinha = (pedido: IPedido) => (
     <>
@@ -108,10 +102,14 @@ function ListagemPedido() {
       <td className="item-lista">{pedido.data_compra}</td>
       <td className="item-lista">
         <Alterar
-          enderecoAdicionar="/cadastro-pedidos"
           rotaEdicao="/pedidos"
           idItem={pedido.id} 
           onExcluir={() => excluirPedido(pedido)}
+        />
+      </td>
+      <td className="item-lista">
+        <Adicionar
+        enderecoAdicionar="/cadastro-pedidos"
         />
       </td>
     </>

@@ -1,5 +1,6 @@
 import { useForm, SubmitHandler, Path } from "react-hook-form";
 import Botao from "../Botao";
+import { FieldValues } from "react-hook-form";
 
 interface Campo {
   id: string; // Identificador único do campo
@@ -11,15 +12,15 @@ interface Campo {
   validation?: object; // Regras de validação
 }
 
-import { FieldValues } from "react-hook-form";
 
 interface FormularioProps<T extends FieldValues> {
   campos: Campo[]; // Lista de campos do formulário
   onSubmit: SubmitHandler<T>; // Função de envio do formulário
+  erros?: Record<string, string>; //mensagens de erro
 }
 
-const Formulario = <T extends FieldValues>({ campos, onSubmit }: FormularioProps<T>) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<T>();
+const Formulario = <T extends FieldValues>({ campos, onSubmit, erros = {} }: FormularioProps<T>) => {
+  const { register, handleSubmit } = useForm<T>();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -33,9 +34,15 @@ const Formulario = <T extends FieldValues>({ campos, onSubmit }: FormularioProps
             <select
               id={campo.id}
               {...register(campo.id as Path<T>, campo.validation)}
+              defaultValue="" // Garante que o placeholder será exibido por padrão
               className="formulario-campo"
             >
-              <option value="">Selecione</option>
+              {/* Adiciona o placeholder como a primeira opção */}
+              {campo.placeholder && (
+                <option value="" disabled>
+                  {campo.placeholder}
+                </option>
+              )}
               {campo.options?.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -60,10 +67,9 @@ const Formulario = <T extends FieldValues>({ campos, onSubmit }: FormularioProps
             />
           )}
 
-          {errors[campo.id as keyof T] && (
-            <p className="text-red-500 text-sm">
-              {(errors[campo.id as keyof T] as any).message}
-            </p>
+          {/* Exibe a mensagem de erro abaixo do campo */}
+          {erros[campo.id] && (
+            <p className="text-red-500 text-sm">{erros[campo.id]}</p>
           )}
         </div>
       ))}

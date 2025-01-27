@@ -6,6 +6,10 @@ interface IPedido {
     total: number;
     data_compra: string;
     quantidade: number;
+    cliente: {
+        id: number;
+        nome: string;
+    };
     }
 
     export default IPedido;
