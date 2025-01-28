@@ -1,17 +1,22 @@
 import React from "react";
 
 interface AdicionarProps {
-    enderecoAdicionar: string; // Rota para adicionar
+    enderecoAdicionar: string; // link para cadastro
+    textAdicionar: string; // texto do botão
   }
 
-const Adicionar: React.FC<AdicionarProps> = ({
-  enderecoAdicionar,
-}) => {
+const Adicionar: React.FC<AdicionarProps> = ({ enderecoAdicionar, textAdicionar }) => {
   return (
-    <div className="">
+    <div>
+
+      {/* Botão de Cadastro */}
       <a href={enderecoAdicionar}>
-        Cadastar
+        <button className="p-5 rounded-lg bg-azuljava text-white
+         hover:bg-laranjajava transition-all duration-300">
+        {textAdicionar}
+        </button>
       </a>
+
     </div>
   )
 };

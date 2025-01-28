@@ -4,88 +4,102 @@ import Formulario from "../../../components/FormularioLayout";
 import PageLayout from "../../../components/PageLayout";
 import { z } from "zod";
 import BebidaService from "../../../services/BebidaService";
-import { bebidaEditarSchema } from "../../../schemas/bebidaEditarSchema";
+import { bebidaSchema } from "../../../schemas/bebidaSchema";
 
 type Campo<T> = {
-    id: keyof T;
-    label: string;
-    type: "text" | "password" | "select" | "file" | "number";
-    placeholder?: string;
-    options?: { value: string; label: string }[];
+  id: keyof T;
+  label: string;
+  type: "text" | "password" | "select" | "file" | "number";
+  placeholder?: string;
+  options?: { value: string; label: string }[];
 };
 
-//verificação com zod
-type BebidaForm = z.infer<typeof bebidaEditarSchema>;
+//verificação dos campos
+type BebidaForm = z.infer<typeof bebidaSchema>;
 
 const EditarBebida = () => {
-    const urlSegments = window.location.pathname.split("/");
-    const id = urlSegments[urlSegments.length - 1];
-    const [mensagem, setMensagem] = useState<string | null>(null);
+  const urlSegments = window.location.pathname.split("/");
+  const id = urlSegments[urlSegments.length - 1];
+  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
+  const [erros, setErros] = useState<Record<string, string>>({});
 
-    // Configuração dos campos do formulário
-    const campos: Campo<BebidaForm>[] = [
-        {
-            id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida",
-        },
-        {
-            id: "preco", label: "Preço", type: "number", placeholder: "Digite o preço da bebida",
-        },
-        {
-            id: "imagem", label: "Imagem", type: "file",
-        },
-        {
-            id: "status", label: "Status", type: "select", placeholder: "Selecione um status",
-            options: [
-                { value: "Ativo", label: "Ativo" },
-                { value: "Inativo", label: "Inativo" },
-            ],
+  // Configuração dos campos do formulário
+  const campos: Campo<BebidaForm>[] = [
+    { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida" },
+    { id: "preco", label: "Preço", type: "number", placeholder: "Digite o preço da bebida" },
+    { id: "imagem", label: "Imagem", type: "file" },
+    { id: "status", label: "Status", type: "select", placeholder: "Selecione um status",
+      options: [
+        { value: "Ativo", label: "Ativo" },
+        { value: "Inativo", label: "Inativo" },
+      ]}
+  ];
+
+  // Função de envio do formulário
+  const handleSubmit = async (data: any) => {
+    try {
+      //limpa os erros do zod e a mensagem
+      setMensagem(null);
+      setMensagemSucesso(null);
+      setErros({});
+      // Validação com zod
+      const validData = bebidaSchema.parse(data);
+      let base64Image = "";
+      if (validData.imagem) {
+        const fileInput = (document.getElementById("imagem") as HTMLInputElement).files?.[0];
+        if (fileInput) {
+          if (fileInput.size > 1 * 1024 * 1024) {
+            alert("A imagem deve ter no máximo 1MB.");
+            return;
+          }
+          base64Image = await fileToBase64(fileInput);
         }
-    ];
+      }
 
-    // Função de envio do formulário
-    const handleSubmit = async (data: BebidaForm) => {
-        let base64Image = "";
-        if (data.imagem) {
-            const fileInput = (document.getElementById("imagem") as HTMLInputElement)
-                .files?.[0];
-            if (fileInput) {
-                if (fileInput.size > 1 * 1024 * 1024) {
-                    alert("A imagem deve ter no máximo 1MB.");
-                    return;
-                }
-                base64Image = await fileToBase64(fileInput);
-            }
-        }
+      const payload = {
+        ...validData,
+        imagem: base64Image || undefined,
+        status: validData.status as "Ativo" | "Inativo",
+      };
 
-        const payload = {
-            ...data,
-            imagem: base64Image || undefined,
-            status: data.status as "Ativo" | "Inativo",
-        };
+      const response = await BebidaService.putEditarDados(id!, payload);
+      if (response) {
+        setMensagem("Bebida atualizada com sucesso!");
+        setMensagemSucesso(true);
+      } else {
+        setMensagem("Erro ao atualizar bebida.");
+        setMensagemSucesso(false);
+      }
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        // Mapear os erros do zod
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0]] = err.message;
+          }
+        });
+        setErros(fieldErrors); // Define erros para exibição no formulário
+      } else {
+        console.error("Erro ao atualizar bebida:", error);
+        setMensagem("Ocorreu um erro ao salvar os dados.");
+        setMensagemSucesso(false);
+      }
+    }
+  };
 
-        try {
-            const response = await BebidaService.putEditarDados(id!, payload);
-            if (response) {
-                setMensagem("Bebida atualizada com sucesso!");
-            } else {
-                setMensagem("Erro ao atualizar bebida.");
-            }
-        } catch (error) {
-            console.error("Erro ao atualizar bebida:", error);
-            setMensagem("Ocorreu um erro ao salvar os dados.");
-        }
-    };
-
-    return (
-        <PageLayout titulo="Editar Bebida" rota="/listagem-bebidas">
-            <Formulario campos={campos} onSubmit={handleSubmit} />
-            {mensagem && (
-                <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">
-                    {mensagem}
-                </div>
-            )}
-        </PageLayout>
-    );
+  return (
+    <PageLayout titulo="Editar Bebida" rota="/listagem-bebidas">
+      <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
+      {mensagem && (
+        <div
+          className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          {mensagem}
+        </div>
+      )}
+    </PageLayout>
+  );
 };
 
 export default EditarBebida;

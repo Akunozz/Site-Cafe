@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Formulario from "../../../components/FormularioLayout";
 import PageLayout from "../../../components/PageLayout";
-import pedidoService from "../../../services/PedidoService";
+import PedidoService from "../../../services/PedidoService";
 import bebidaService from "../../../services/BebidaService";
 import PessoaService from "../../../services/PessoaService";
 import { z } from "zod";
@@ -22,21 +22,23 @@ const EditarPedido = () => {
     const urlSegments = window.location.pathname.split("/");
     const id = urlSegments[urlSegments.length - 1];
     const [mensagem, setMensagem] = useState<string | null>(null);
+    const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
     const [bebidas, setBebidas] = useState<{ id: number; nome: string; preco: number }[]>([]);
     const [clienteNome, setClienteNome] = useState<string | null>(null);
+    const [erros, setErros] = useState<Record<string, string>>({});
 
     useEffect(() => {
         async function fetchData() {
             try {
                 // Buscar dados do pedido
-                const pedidoResponse = await pedidoService.getIdDados(id!);
+                const pedidoResponse = await PedidoService.getIdDados(id!);
                 console.log("Pedido recebido:", pedidoResponse); // Log do pedido completo
-    
+
                 // Obter o cliente diretamente do pedidoResponse
                 if (pedidoResponse?.cliente) {
                     const clienteId = pedidoResponse.cliente.id; // Acessa o ID do cliente
                     console.log("Cliente ID encontrado:", clienteId); // Log do cliente ID
-    
+
                     // Buscar dados do cliente usando o ID
                     const clienteResponse = await PessoaService.getIdDados(String(clienteId));
                     setClienteNome(clienteResponse?.nome || "Cliente não encontrado");
@@ -44,7 +46,7 @@ const EditarPedido = () => {
                     console.warn("Dados do cliente ausentes no pedido.");
                     setClienteNome("Cliente não encontrado");
                 }
-    
+
                 // Buscar dados das bebidas
                 const bebidasResponse = await bebidaService.getListarDados();
                 setBebidas(
@@ -58,10 +60,10 @@ const EditarPedido = () => {
                 alert("Erro ao carregar dados.");
             }
         }
-    
+
         fetchData();
     }, [id]);
-    
+
 
     // Configuração dos campos do formulário
     const campos: Campo<PedidoForm>[] = [
@@ -78,29 +80,49 @@ const EditarPedido = () => {
     ];
 
     // Função de envio do formulário
-    const handleSubmit = async (data: PedidoForm) => {
-        // Encontre a bebida selecionada pelo ID
-        const bebidaSelecionada = bebidas.find((bebida) => bebida.id === Number(data.bebida_id));
-        const unitario = bebidaSelecionada?.preco || 0;
-        // Calcule o total
-        const total = unitario * data.quantidade;
-        const payload = {
-            ...data,
-            unitario,
-            total,
-        };
+    const handleSubmit = async (data: any) => {
         try {
-            const response = await pedidoService.putEditarDados(id!, payload);
+            //limpa os erros do zod e a mensagem
+            setMensagem(null);
+            setMensagemSucesso(null);
+            setErros({});
+
+            const validData = pedidosEditarSchema.parse(data);
+            // Encontre a bebida selecionada pelo ID
+            const bebidaSelecionada = bebidas.find((bebida) => bebida.id === Number(data.bebida_id));
+            const unitario = bebidaSelecionada?.preco || 0;
+            // Calcule o total
+            const total = unitario * data.quantidade;
+
+            const payload = {
+                ...validData,
+                unitario,
+                total,
+            };
+
+            const response = await PedidoService.putEditarDados(id!, payload);
             if (response) {
                 setMensagem("Pedido atualizado com sucesso!");
+                setMensagemSucesso(true);
             } else {
                 setMensagem("Erro ao atualizar pedido.");
+                setMensagemSucesso(false);
             }
         } catch (error) {
-            console.error("Erro ao atualizar pedido:", error);
-            setMensagem("Ocorreu um erro ao salvar os dados.");
-        }
-    };
+            if (error instanceof z.ZodError) {
+                // Mapeia os erros para o estado
+                const errosMap = error.errors.reduce((acc, err) => {
+                  acc[err.path[0]] = err.message;
+                  return acc;
+                }, {} as Record<string, string>);
+                setErros(errosMap); // Atualiza os erros no estado
+              } else {
+                console.error("Erro ao editar pedido:", error);
+                setMensagem("Ocorreu um erro ao salvar os dados.");
+                setMensagemSucesso(false); // Mensagem de erro
+              }
+            }
+          };
 
     return (
         <PageLayout titulo="Editar Pedido" rota="/listagem-pedidos">
@@ -109,9 +131,12 @@ const EditarPedido = () => {
                     Cliente: <strong>{clienteNome}</strong>
                 </div>
             )}
-            <Formulario campos={campos} onSubmit={handleSubmit}/>
+            <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
             {mensagem && (
-                <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">
+                <div
+                    className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        }`}
+                >
                     {mensagem}
                 </div>
             )}

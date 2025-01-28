@@ -23,7 +23,7 @@ const EditarCliente = () => {
   const id = urlSegments[urlSegments.length - 1];
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
-  const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]); // Lista de setores
+  const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]);
   const [erros, setErros] = useState<Record<string, string>>({});
 
   // Carregar setores ao montar o componente
@@ -43,30 +43,16 @@ const EditarCliente = () => {
 
   // Configuração dos campos do formulário
   const campos: Campo<PessoaForm>[] = [
-    {
-      id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da pessoa",
-    },
-    {
-      id: "setor_id",
-      label: "Setor",
-      type: "select",
-      placeholder: "Selecione um setor",
+    { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da pessoa" },
+    { id: "setor_id", label: "Setor", type: "select", placeholder: "Selecione um setor",
       options: setores.map((setor) => ({
         value: setor.id,
         label: setor.nome,
-      })), // Mapeia os setores para o dropdown
-    },
-    {
-      id: "imagem", label: "Imagem", type: "file",
-    },
-    {
-      id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o nome de usuário",
-    },
-    {
-      id: "senha", label: "Senha", type: "password", placeholder: "Digite a senha",
-    },
-    {
-      id: "permissao", label: "Permissão", type: "select", placeholder: "Selecione uma permissão",
+      }))},
+    { id: "imagem", label: "Imagem", type: "file" },
+    { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o nome de usuário" },
+    { id: "senha", label: "Senha", type: "password", placeholder: "Digite a senha" },
+    { id: "permissao", label: "Permissão", type: "select", placeholder: "Selecione uma permissão",
       options: [
         { value: "ADMIN", label: "Administrador" },
         { value: "USER", label: "Usuário" },
@@ -78,7 +64,9 @@ const EditarCliente = () => {
   // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      // Limpa os erros anteriores
+      //limpa os erros do zod e a mensagem
+      setMensagem(null);
+      setMensagemSucesso(null);
       setErros({});
       // Valida os dados usando o Zod
       const validData = pessoaSchema.parse(data);

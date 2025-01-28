@@ -4,12 +4,12 @@ import Tabela from "../../../components/Tabela";
 import pessoaService from "../../../services/PessoaService";
 import IPessoa from "../../../interfaces/IPessoa";
 import Alterar from "../../../components/Alterar";
-import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
   const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([]);
 
+  // busca os clientes
   useEffect(() => {
     async function fetchClientes() {
       const response = await pessoaService.getListarDados();
@@ -19,7 +19,7 @@ function ListagemClientes() {
     fetchClientes();
   }, []);
 
-    // Função para excluir um cliente
+    // excluir um cliente
   const excluirCliente = async (cliente: IPessoa) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
@@ -41,7 +41,7 @@ function ListagemClientes() {
     }
   };
   
-  // Função para atualizar a lista filtrada
+  // atualiza a lista filtrada
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = clientes.filter((cliente) =>
@@ -50,6 +50,7 @@ function ListagemClientes() {
     setClientesFiltrados(resultadosFiltrados);
   };
 
+  // campos da listagem
   const colunas = ["ID", "Foto", "Nome", "Setor", "Alterar"];
   const renderLinha = (cliente: IPessoa) => (
     <>
@@ -67,7 +68,8 @@ function ListagemClientes() {
   );
 
   return (
-    <ListagemLayout titulo="Listagem de Clientes" onFilterChange={handleFilterChange}>
+    <ListagemLayout titulo="Listagem de Clientes" onFilterChange={handleFilterChange}
+    textAdicionar="Cadastrar Novo" enderecoAdicionar="/cadastro-cliente">
       <Tabela colunas={colunas} dados={clientesFiltrados} renderLinha={renderLinha} />
     </ListagemLayout>
   );

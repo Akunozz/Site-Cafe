@@ -8,19 +8,17 @@ import IPedido from "../../../interfaces/IPedido";
 import IPessoa from "../../../interfaces/IPessoa";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar";
-import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState<IPedido[]>([]);
   const [pessoas, setPessoas] = useState<IPessoa[]>([]);
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
-  const [textoFiltro, setTextoFiltro] = useState(""); // Estado para armazenar o texto do filtro
 
+  // busca os pedidos
   useEffect(() => {
     async function fetchData() {
       try {
-        // Buscar pedidos
         const pedidosResponse = await PedidoService.getListarDados();
         setPedidos(pedidosResponse);
         setPedidosFiltrados(pedidosResponse);
@@ -37,16 +35,15 @@ function ListagemPedido() {
     fetchData();
   }, []);
 
-  // Função para excluir um pedido
+  // exclui um pedido
   const excluirPedido = async (pedido: IPedido) => {
     if (window.confirm("Tem certeza que deseja excluir este pedido?")) {
       try {
         const pedidoDeletado = await PedidoService.deleteDados(pedido.id);
         if (pedidoDeletado) {
-          // Atualiza os estados após a exclusão
           const pedidosAtualizados = pedidos.filter((c) => c.id !== pedido.id);
           setPedidos(pedidosAtualizados);
-          aplicarFiltro(pedidosAtualizados, textoFiltro); // Reaplica o filtro após a exclusão
+          setPedidosFiltrados(pedidosFiltrados);
         } else {
           alert("Erro ao deletar pedido.");
         }
@@ -69,27 +66,23 @@ function ListagemPedido() {
     return bebida ? bebida.nome : "Desconhecida";
   };
 
-  // Função para aplicar o filtro
-  const aplicarFiltro = (lista: IPedido[], filtro: string) => {
-    const filtroNormalizado = filtro.toLowerCase();
-    const resultadosFiltrados = lista.filter((pedido) =>
-      getPessoaNome(pedido.cliente_id).toLowerCase().includes(filtroNormalizado)
+  // atualiza a lista filtrada
+  const handleFilterChange = (text: string) => {
+    const filtro = text.toLowerCase();
+    const resultadosFiltrados = pedidos.filter((pedido) =>
+    getPessoaNome(pedido.cliente_id).toLowerCase().includes(filtro)
     );
     setPedidosFiltrados(resultadosFiltrados);
   };
 
-  // Função para atualizar o texto do filtro e aplicar o filtro
-  const handleFilterChange = (text: string) => {
-    setTextoFiltro(text); // Atualiza o texto do filtro
-    aplicarFiltro(pedidos, text); // Aplica o filtro com base no texto
-  };
-
+  // mensagem de carregamento
   if (pessoas.length === 0 || bebidas.length === 0) {
-    return <p>Carregando dados...</p>;
+    return <p className="text-2xl">Carregando dados...</p>;
   }
 
+  // campo da listagem
   const colunas = [
-    "Pedido ID", "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar", "Adicioanr"
+    "Pedido ID", "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar"
   ];
   const renderLinha = (pedido: IPedido) => (
     <>
@@ -107,24 +100,14 @@ function ListagemPedido() {
           onExcluir={() => excluirPedido(pedido)}
         />
       </td>
-      <td className="item-lista">
-        <Adicionar
-        enderecoAdicionar="/cadastro-pedidos"
-        />
-      </td>
     </>
   );
 
   return (
     <ListagemLayout
-      titulo="Listagem de Pedidos"
-      onFilterChange={handleFilterChange}
-    >
-      <Tabela
-        colunas={colunas}
-        dados={pedidosFiltrados}
-        renderLinha={renderLinha}
-      />
+      titulo="Listagem de Pedidos" onFilterChange={handleFilterChange} 
+      enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo">
+      <Tabela colunas={colunas} dados={pedidosFiltrados} renderLinha={renderLinha} />
     </ListagemLayout>
   );
 }

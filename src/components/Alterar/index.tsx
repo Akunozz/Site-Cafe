@@ -2,19 +2,18 @@ import React from "react";
 import trashIcon from "../../assets/svg/trash.svg";
 import lapis from "../../assets/svg/lapis.svg";
 
+
+
 interface AlterarProps {
-  onExcluir: () => void; // Função para excluir
-  rotaEdicao: string; // Base da rota para edição
+  onExcluir: () => void; // função para excluir
+  rotaEdicao: string; // link para formulário de edição
   idItem: string | number; // ID do item para editar
 }
 
-const Alterar: React.FC<AlterarProps> = ({
-  onExcluir,
-  rotaEdicao,
-  idItem,
-}) => {
+const Alterar: React.FC<AlterarProps> = ({ onExcluir, rotaEdicao, idItem }) => {
   return (
     <div className="flex justify-center space-x-5">
+      
       {/* Botão de Alterar */}
       <a href={`${rotaEdicao}/${idItem}`}>
         <img
@@ -33,6 +32,7 @@ const Alterar: React.FC<AlterarProps> = ({
           onClick={onExcluir}
         />
       </a>
+      
     </div>
   );
 };

@@ -8,12 +8,16 @@ interface ListagemLayoutProps {
   titulo: string;
   onFilterChange: (text: string) => void;
   children: React.ReactNode;
+  enderecoAdicionar: string;
+  textAdicionar: string;
 }
 
 const ListagemLayout: React.FC<ListagemLayoutProps> = ({
   titulo,
   onFilterChange,
   children,
+  enderecoAdicionar,
+  textAdicionar,
 }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   return (
@@ -24,12 +28,10 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
           isNavOpen ? "ml-64" : "ml-16"
         }`}>
         <h1 className="text-4xl font-bold text-white mb-4">{titulo}</h1>
-        <div className="mt-5 mb-2 w-1/5">
+        <div className="flex mb-0">
           <Filtro onFilterChange={onFilterChange} />
-          <div className="absolute right-10">
-          <Adicionar enderecoAdicionar="/cadastro-cliente"/>
+          <Adicionar enderecoAdicionar={enderecoAdicionar} textAdicionar={textAdicionar}/>
           </div>
-        </div>
         <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">
           {children}
         </div>

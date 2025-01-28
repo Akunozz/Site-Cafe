@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import ListagemLayout from "../../../components/ListagemLayout";
 import Tabela from "../../../components/Tabela";
-import bebidaService from "../../../services/BebidaService";
+import BebidaService from "../../../services/BebidaService";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar";
-import Adicionar from "../../../components/BotaoAdicionar";
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([]);
-  const [textoFiltro, setTextoFiltro] = useState(""); // Estado para armazenar o texto do filtro
 
+  // busca as bebidas
   useEffect(() => {
     async function fetchBebidas() {
       try {
-        const response = await bebidaService.getListarDados();
+        const response = await BebidaService.getListarDados();
         setBebidas(response);
-        aplicarFiltro(response, textoFiltro); // Aplica o filtro inicial
+        setBebidasFiltradas(response);
       } catch (error) {
         console.error("Erro ao buscar bebidas:", error);
       }
@@ -24,16 +23,15 @@ function ListagemBebidas() {
     fetchBebidas();
   }, []);
 
-  // Função para excluir uma bebida
+  // exclui uma bebida
   const excluirBebida = async (bebida: IBebida) => {
     if (window.confirm("Tem certeza que deseja excluir esta bebida?")) {
       try {
-        const bebidaDeletada = await bebidaService.deleteDados(bebida.id);
+        const bebidaDeletada = await BebidaService.deleteDados(bebida.id);
         if (bebidaDeletada) {
-          // Atualiza os estados após a exclusão
           const bebidaAtualizadas = bebidas.filter((c) => c.id !== bebida.id);
           setBebidas(bebidaAtualizadas);
-          aplicarFiltro(bebidaAtualizadas, textoFiltro); // Recalcula a lista filtrada com o texto atual
+          setBebidasFiltradas(bebidaAtualizadas);
         } else {
           alert("Erro ao deletar bebida.");
         }
@@ -44,21 +42,15 @@ function ListagemBebidas() {
     }
   };
 
-  // Aplica o filtro com base no texto e na lista de bebidas
-  const aplicarFiltro = (lista: IBebida[], filtro: string) => {
-    const filtroNormalizado = filtro.toLowerCase();
-    const resultadosFiltrados = lista.filter((bebida) =>
-      bebida.nome.toLowerCase().includes(filtroNormalizado)
-    );
+  // atualiza a lista filtrada
+  const handleFilterChange = (text: string) => {
+    const filtro = text.toLowerCase();
+    const resultadosFiltrados = bebidas.filter((bebida) =>
+    bebida.nome.toLowerCase().includes(filtro));
     setBebidasFiltradas(resultadosFiltrados);
   };
 
-  // Função para atualizar a lista filtrada ao digitar no campo de filtro
-  const handleFilterChange = (text: string) => {
-    setTextoFiltro(text); // Atualiza o texto do filtro
-    aplicarFiltro(bebidas, text); // Aplica o filtro com base no texto atualizado
-  };
-
+  //campos da listagem
   const colunas = ["Imagem", "Nome", "Preço", "ID", "Status", "Alterar"];
   const renderLinha = (bebida: IBebida) => (
     <>
@@ -89,6 +81,8 @@ function ListagemBebidas() {
     <ListagemLayout
       titulo="Listagem de Bebidas"
       onFilterChange={handleFilterChange}
+      enderecoAdicionar="/cadastro-bebidas"
+      textAdicionar="Cadastrar Nova"
     >
       <Tabela
         colunas={colunas}
