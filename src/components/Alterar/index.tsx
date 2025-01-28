@@ -3,7 +3,6 @@ import trashIcon from "../../assets/svg/trash.svg";
 import lapis from "../../assets/svg/lapis.svg";
 
 
-
 interface AlterarProps {
   onExcluir: () => void; // função para excluir
   rotaEdicao: string; // link para formulário de edição

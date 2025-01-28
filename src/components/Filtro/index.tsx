@@ -1,6 +1,7 @@
 import React from "react";
 import search from "../../assets/svg/search.svg";
 
+
 interface FiltroProps {
   onFilterChange: (text: string) => void; // callback para enviar o texto filtrado ao componente pai
 }

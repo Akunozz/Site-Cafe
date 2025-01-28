@@ -2,6 +2,7 @@ import { useForm, SubmitHandler, Path } from "react-hook-form";
 import Botao from "../BotaoFormulario";
 import { FieldValues } from "react-hook-form";
 
+
 interface Campo {
   id: string; // Identificador do campo
   label: string; // Texto do label
@@ -53,7 +54,7 @@ const Formulario = <T extends FieldValues>({ campos, onSubmit, erros = {} }: For
               ))}
             </select>
           ) :
-
+            
             campo.type === "textarea" ? (
               <textarea
                 id={campo.id}

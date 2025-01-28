@@ -2,7 +2,6 @@ import React from "react";
 import back from "../../assets/svg/back.svg"
 
 
-
 interface BackProps {
   rota: string; // link para voltar para listagem
 }

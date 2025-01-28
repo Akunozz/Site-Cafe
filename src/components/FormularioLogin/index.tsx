@@ -2,24 +2,25 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Botao from "../BotaoFormulario";
 
-type LoginFormInputs = {
-  email: string;
+
+type LoginFormInputs = { // define a estrutura que espera receber do formulário
+  email: string; 
   password: string;
 };
 
-type FormularioLoginProps = {
+type FormularioLoginProps = { // props do FormularioLogin
   onSubmit: SubmitHandler<LoginFormInputs>;
 };
 
 const FormularioLogin: React.FC<FormularioLoginProps> = ({ onSubmit }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar a senha
+  const [showPassword, setShowPassword] = useState(false); // ativa exibição da senha
 
   return (
     <form 
       onSubmit={handleSubmit(onSubmit)} 
-      className="p-3"
-    >
+      className="p-3">
+        
       {/* Campo de email */}
       <div className="mb-6">
         <label htmlFor="email" className="formulario-label">Email:</label>

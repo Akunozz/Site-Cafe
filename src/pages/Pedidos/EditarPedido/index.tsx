@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Formulario from "../../../components/FormularioLayout";
 import PageLayout from "../../../components/PageLayout";
 import PedidoService from "../../../services/PedidoService";
-import bebidaService from "../../../services/BebidaService";
+import BebidaService from "../../../services/BebidaService";
 import PessoaService from "../../../services/PessoaService";
 import { z } from "zod";
 import { pedidosEditarSchema } from "../../../schemas/pedidosEditarSchema";
@@ -32,23 +32,20 @@ const EditarPedido = () => {
             try {
                 // Buscar dados do pedido
                 const pedidoResponse = await PedidoService.getIdDados(id!);
-                console.log("Pedido recebido:", pedidoResponse); // Log do pedido completo
 
                 // Obter o cliente diretamente do pedidoResponse
                 if (pedidoResponse?.cliente) {
                     const clienteId = pedidoResponse.cliente.id; // Acessa o ID do cliente
-                    console.log("Cliente ID encontrado:", clienteId); // Log do cliente ID
 
                     // Buscar dados do cliente usando o ID
                     const clienteResponse = await PessoaService.getIdDados(String(clienteId));
                     setClienteNome(clienteResponse?.nome || "Cliente não encontrado");
                 } else {
-                    console.warn("Dados do cliente ausentes no pedido.");
                     setClienteNome("Cliente não encontrado");
                 }
 
                 // Buscar dados das bebidas
-                const bebidasResponse = await bebidaService.getListarDados();
+                const bebidasResponse = await BebidaService.getListarDados();
                 setBebidas(
                     bebidasResponse.map((bebida) => ({
                         ...bebida,
@@ -74,9 +71,7 @@ const EditarPedido = () => {
                 label: bebida.nome,
             })),
         },
-        {
-            id: "quantidade", label: "Quantidade", type: "number", placeholder: "Digite a quantidade",
-        },
+        { id: "quantidade", label: "Quantidade", type: "number", placeholder: "Digite a quantidade" },
     ];
 
     // Função de envio do formulário
@@ -112,17 +107,17 @@ const EditarPedido = () => {
             if (error instanceof z.ZodError) {
                 // Mapeia os erros para o estado
                 const errosMap = error.errors.reduce((acc, err) => {
-                  acc[err.path[0]] = err.message;
-                  return acc;
+                    acc[err.path[0]] = err.message;
+                    return acc;
                 }, {} as Record<string, string>);
                 setErros(errosMap); // Atualiza os erros no estado
-              } else {
+            } else {
                 console.error("Erro ao editar pedido:", error);
                 setMensagem("Ocorreu um erro ao salvar os dados.");
                 setMensagemSucesso(false); // Mensagem de erro
-              }
             }
-          };
+        }
+    };
 
     return (
         <PageLayout titulo="Editar Pedido" rota="/listagem-pedidos">
@@ -135,8 +130,7 @@ const EditarPedido = () => {
             {mensagem && (
                 <div
                     className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                        }`}
-                >
+                        }`}>
                     {mensagem}
                 </div>
             )}

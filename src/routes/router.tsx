@@ -7,7 +7,7 @@ import ListagemBebidas from "../pages/Bebidas/ListagemBebidas";
 import ListagemPedidos from "../pages/Pedidos/ListagemPedidos";
 import CadastroCliente from "../pages/Pessoas/CadastroCliente";
 import CadastroBebidas from "../pages/Bebidas/CadastroBebidas";
-import CadastroPedidos from "../pages/Pedidos/CadastroPedidos";
+import CadastroPedido from "../pages/Pedidos/CadastroPedidos";
 import EditarCliente from "../pages/Pessoas/EditarCliente";
 import EditarBebida from "../pages/Bebidas/EditarBebidas";
 import EditarPedido from "../pages/Pedidos/EditarPedido";
@@ -63,7 +63,7 @@ const pedidosRoutes = [
   new Route({
     getParentRoute: () => RootRoute,
     path: "/cadastro-pedidos",
-    component: CadastroPedidos,
+    component: CadastroPedido,
   }),
   new Route({
     getParentRoute: () => RootRoute,

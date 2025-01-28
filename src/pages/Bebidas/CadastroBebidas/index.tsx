@@ -23,6 +23,7 @@ const CadastroBebidas = () => {
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
+  
   const campos: Campo<BebidaForm>[] = [
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida" },
     { id: "imagem", label: "Imagem", type: "file" },
@@ -63,10 +64,10 @@ const CadastroBebidas = () => {
 
       const response = await bebidaService.postAdicionarDados(payload);
       if (response) {
-        setMensagem("Bebida atualizada com sucesso!");
+        setMensagem("Bebida cadastrada com sucesso!");
         setMensagemSucesso(true);
       } else {
-        setMensagem("Erro ao atualizar bebida.");
+        setMensagem("Erro ao cadastrar bebida.");
         setMensagemSucesso(false);
       }
     } catch (error: any) {
@@ -80,7 +81,7 @@ const CadastroBebidas = () => {
         });
         setErros(fieldErrors); // Define erros para exibição no formulário
       } else {
-        console.error("Erro ao atualizar bebida:", error);
+        console.error("Erro ao cadastar bebida:", error);
         setMensagem("Ocorreu um erro ao salvar os dados.");
         setMensagemSucesso(false);
       }

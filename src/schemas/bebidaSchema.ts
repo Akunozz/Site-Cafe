@@ -5,5 +5,5 @@ export const bebidaSchema = z.object({
     preco: z.coerce.number().positive("O preço deve ser maior que zero"),
     imagem: z.any().optional(),
     descricao: z.string().optional(),
-    status: z.string().nonempty("O status é obrigatório"),
+    status: z.string().nonempty("Selecione um status"),
 });

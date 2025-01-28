@@ -1,17 +1,15 @@
 import React from "react";
 
 interface TabelaProps {
-  colunas: string[];
-  dados: any[];
-  renderLinha: (item: any) => React.ReactNode;
+  colunas: string[];  // vetor de colunas
+  dados: any[];  // vetor de dados da tabela
+  renderLinha: (item: any) => React.ReactNode; // função para rederizar o conteúdo de cada linha
 }
 
-const Tabela: React.FC<TabelaProps> = ({
-  colunas,
-  dados,
-  renderLinha,
-}) => {
+const Tabela: React.FC<TabelaProps> = ({ colunas, dados, renderLinha }) => {
   return (
+
+    // cabeçalho da tabela
     <table className="tabela">
       <thead>
         <tr>
@@ -22,6 +20,8 @@ const Tabela: React.FC<TabelaProps> = ({
           ))}
         </tr>
       </thead>
+
+      {/* corpo da tabela */}
       <tbody>
         {dados.map((item, index) => (
           <tr key={index} className="hover:bg-slate-100">
@@ -29,6 +29,7 @@ const Tabela: React.FC<TabelaProps> = ({
           </tr>
         ))}
       </tbody>
+      
     </table>
   );
 };
