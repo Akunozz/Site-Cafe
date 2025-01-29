@@ -1,6 +1,6 @@
-import { GraficoPB } from "@/components/GráficoClientesCompras/pieChart";
-import { GraficoBV } from "@/components/GráficoBebidasVendidas/bebibasMaisVendidas";
-import { GraficoQP } from "@/components/GráficoPedidosRealizados/graficoPedidos";
+import { GraficoPB } from "@/components/GráficoClientesCompras/graficoPB";
+import { GraficoBV } from "@/components/GráficoBebidasVendidas/graficoBV";
+import { GraficoQP } from "@/components/GráficoPedidosRealizados/graficoqp";
 import NavBar from "@/components/NavBar/navbar";
 
 function TelaInicial() {
@@ -14,7 +14,7 @@ function TelaInicial() {
         <h1 className="mr-16 items-center justify-center flex text-6xl font-bold text-white mb-6">Tela Inicial</h1>
         
         {/* Grid de gráficos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <GraficoPB />
           <GraficoBV />
           <GraficoQP />

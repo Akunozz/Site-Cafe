@@ -1,4 +1,4 @@
-interface IPessoaRelatorio {
+interface IPedidoRelatorio {
     anoMes: string,
     totalVendas: number
-} export default IPessoaRelatorio;
+} export default IPedidoRelatorio;
