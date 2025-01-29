@@ -1,16 +1,16 @@
 import { RouterProvider, Route, createRouter } from "@tanstack/react-router";
 import { Route as RootRoute } from "./__root";
-import TelaLogin from "../pages/TelaLogin";
-import TelaInicial from "../pages/TelaInicial";
-import ListagemClientes from "../pages/Pessoas/ListagemClientes";
-import ListagemBebidas from "../pages/Bebidas/ListagemBebidas";
-import ListagemPedidos from "../pages/Pedidos/ListagemPedidos";
-import CadastroCliente from "../pages/Pessoas/CadastroCliente";
-import CadastroBebidas from "../pages/Bebidas/CadastroBebidas";
-import CadastroPedido from "../pages/Pedidos/CadastroPedidos";
-import EditarCliente from "../pages/Pessoas/EditarCliente";
-import EditarBebida from "../pages/Bebidas/EditarBebidas";
-import EditarPedido from "../pages/Pedidos/EditarPedido";
+import TelaLogin from "../pages/TelaLogin/telaLogin";
+import TelaInicial from "../pages/TelaInicial/telaInicial";
+import ListagemClientes from "../pages/Pessoas/ListagemClientes/listagemCliente";
+import ListagemBebidas from "../pages/Bebidas/ListagemBebidas/listagemBebidas";
+import ListagemPedidos from "../pages/Pedidos/ListagemPedidos/listagemPedidos";
+import CadastroCliente from "../pages/Pessoas/CadastroCliente/cadastroCliente";
+import CadastroBebidas from "../pages/Bebidas/CadastroBebidas/cadastroBebidas";
+import CadastroPedido from "../pages/Pedidos/CadastroPedidos/cadastroPedidos";
+import EditarCliente from "../pages/Pessoas/EditarCliente/editarCliente";
+import EditarBebida from "../pages/Bebidas/EditarBebidas/bebidasEditar";
+import EditarPedido from "../pages/Pedidos/EditarPedido/editarPedido";
 
 
 // Rotas de Pessoas

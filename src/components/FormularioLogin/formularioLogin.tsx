@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Botao from "../BotaoFormulario";
+import Botao from "../BotaoFormulario/botaoFormulario";
 
 
 type LoginFormInputs = { // define a estrutura que espera receber do formulário

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import NavBarListagem from "../NavBarListagem";
-import Filtro from "../Filtro";
-import Adicionar from "../BotaoAdicionar";
+import NavBarListagem from "../NavBarListagem/navbarListagem";
+import Filtro from "../Filtro/filtro";
+import Adicionar from "../BotaoAdicionar/botaoAdicionar";
 
 
 interface ListagemLayoutProps {

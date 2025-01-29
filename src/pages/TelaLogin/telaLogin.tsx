@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import FormularioLogin from "../../components/FormularioLogin/index";
+import FormularioLogin from "../../components/FormularioLogin/formularioLogin";
 import cafe from "../../assets/imagens/cafe.png";
 import cafe_fundo from "../../assets/imagens/cafe_fundo.jpg"
 

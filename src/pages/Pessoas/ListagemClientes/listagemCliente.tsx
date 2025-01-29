@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ListagemLayout from "../../../components/ListagemLayout";
-import Tabela from "../../../components/Tabela";
+import ListagemLayout from "../../../components/ListagemLayout/listagemLayout";
+import Tabela from "../../../components/Tabela/tabela";
 import pessoaService from "../../../services/PessoaService";
 import IPessoa from "../../../interfaces/IPessoa";
-import Alterar from "../../../components/Alterar";
+import Alterar from "../../../components/Alterar/alterar";
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);

@@ -1,6 +1,6 @@
 import React from "react";
-import NavBar from "../NavBar";
-import Back from "../Back"
+import NavBar from "../NavBar/navbar";
+import Back from "../Back/back"
 
 interface PageLayoutProps {
   titulo: string;             // h1 da página

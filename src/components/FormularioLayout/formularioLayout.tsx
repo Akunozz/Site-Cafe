@@ -1,5 +1,5 @@
 import { useForm, SubmitHandler, Path } from "react-hook-form";
-import Botao from "../BotaoFormulario";
+import Botao from "../BotaoFormulario/botaoFormulario";
 import { FieldValues } from "react-hook-form";
 
 
@@ -17,6 +17,7 @@ interface FormularioProps<T extends FieldValues> {
   campos: Campo[]; // Lista de campos do formulário
   onSubmit: SubmitHandler<T>; // Função de envio do formulário
   erros?: Record<string, string>; // Mensagens de erros
+  valoresIniciais?: T;
 }
 
 const Formulario = <T extends FieldValues>({ campos, onSubmit, erros = {} }: FormularioProps<T>) => {

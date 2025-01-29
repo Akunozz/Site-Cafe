@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Formulario from "../../../components/FormularioLayout";
-import PageLayout from "../../../components/PageLayout";
+import Formulario from "../../../components/FormularioLayout/formularioLayout";
+import PageLayout from "../../../components/PageLayout/pageLayout";
 import PessoaService from "../../../services/PessoaService";
 import BebidaService from "../../../services/BebidaService";
 import PedidoService from "../../../services/PedidoService";
@@ -23,6 +23,7 @@ const CadastroPedido = () => {
   const [erros, setErros] = useState<Record<string, string>>({});
   const [clientes, setClientes] = useState<{ id: number, nome: string }[]>([]);
   const [bebidas, setBebidas] = useState<{ id: number, nome: string, preco: number }[]>([]);
+  const dataAtual = new Date().toISOString().split("T")[0];
 
   // Carregar dados ao montar o componente
   useEffect(() => {
@@ -34,17 +35,16 @@ const CadastroPedido = () => {
           clienteResponse.map((cliente) => ({
             ...cliente,
             id: Number(cliente.id),
-        }))
+          }))
         );
-
-                // Buscar dados das bebidas
-                const bebidasResponse = await BebidaService.getListarDados();
-                setBebidas(
-                    bebidasResponse.map((bebida) => ({
-                        ...bebida,
-                        id: Number(bebida.id),
-                    }))
-                );
+        // Buscar dados das bebidas
+        const bebidasResponse = await BebidaService.getListarDados();
+        setBebidas(
+          bebidasResponse.map((bebida) => ({
+            ...bebida,
+            id: Number(bebida.id),
+          }))
+        );
 
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
@@ -72,24 +72,27 @@ const CadastroPedido = () => {
     { id: "quantidade", label: "Quantidade", type: "number", placeholder: "Digite a quantidade" },
   ];
 
-    // Função de envio do formulário
+  // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      console.log("Dados enviados:", data);
       //limpa os erros do zod e a mensagem
       setMensagem(null);
       setMensagemSucesso(null);
       setErros({});
       // Validação com zod
       const validData = pedidosSchema.parse(data);
+
       const bebidaSelecionada = bebidas.find((bebida) => bebida.id === Number(data.bebida_id));
       const unitario = bebidaSelecionada?.preco || 0;
       // Calcule o total
       const total = unitario * data.quantidade;
       const payload = {
         ...validData,
+        bebida_id: Number(validData.bebida_id),
+        cliente_id: Number(validData.cliente_id),
         unitario,
         total,
+        data_compra: dataAtual,
       };
 
       const response = await PedidoService.postAdicionarDados(payload);

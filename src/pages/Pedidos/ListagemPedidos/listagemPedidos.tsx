@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import ListagemLayout from "../../../components/ListagemLayout";
-import Tabela from "../../../components/Tabela";
+import ListagemLayout from "../../../components/ListagemLayout/listagemLayout";
+import Tabela from "../../../components/Tabela/tabela";
 import PedidoService from "../../../services/PedidoService";
 import PessoaService from "../../../services/PessoaService";
 import BebidaService from "../../../services/BebidaService";
 import IPedido from "../../../interfaces/IPedido";
 import IPessoa from "../../../interfaces/IPessoa";
 import IBebida from "../../../interfaces/IBebida";
-import Alterar from "../../../components/Alterar";
+import Alterar from "../../../components/Alterar/alterar";
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
@@ -43,7 +43,7 @@ function ListagemPedido() {
         if (pedidoDeletado) {
           const pedidosAtualizados = pedidos.filter((c) => c.id !== pedido.id);
           setPedidos(pedidosAtualizados);
-          setPedidosFiltrados(pedidosFiltrados);
+          setPedidosFiltrados(pedidosAtualizados);
         } else {
           alert("Erro ao deletar pedido.");
         }

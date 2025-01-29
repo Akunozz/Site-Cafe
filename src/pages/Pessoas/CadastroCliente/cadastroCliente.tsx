@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fileToBase64 } from "../../../utils/imageUtils";
-import Formulario from "../../../components/FormularioLayout";
-import PageLayout from "../../../components/PageLayout";
+import Formulario from "../../../components/FormularioLayout/formularioLayout";
+import PageLayout from "../../../components/PageLayout/pageLayout";
 import { z } from "zod";
 import pessoaService from "../../../services/PessoaService";
 import SetorService from "../../../services/SetorService";
@@ -15,15 +15,13 @@ type Campo<T> = {
   options?: { value: string; label: string }[];
 };
 
-//verificação com zod
+//Validação com Zod
 type PessoaForm = z.infer<typeof pessoaSchema>;
 
-const EditarCliente = () => {
-  const urlSegments = window.location.pathname.split("/");
-  const id = urlSegments[urlSegments.length - 1];
+const TelaCadastro = () => {
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
-  const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]);
+  const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]); // Lista de setores
   const [erros, setErros] = useState<Record<string, string>>({});
 
   // Carregar setores ao montar o componente
@@ -37,25 +35,29 @@ const EditarCliente = () => {
         alert("Não foi possível carregar os setores.");
       }
     }
-
     fetchSetores();
   }, []);
 
-  // Configuração dos campos do formulário
+  //Campos do Formulário
   const campos: Campo<PessoaForm>[] = [
-    { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da pessoa" },
-    { id: "setor_id", label: "Setor", type: "select", placeholder: "Selecione um setor",
+    { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome" },
+    {
+      id: "setor_id", label: "Setor", type: "select", placeholder: "Selecione um setor",
       options: setores.map((setor) => ({
         value: setor.id,
         label: setor.nome,
-      }))},
-    { id: "imagem", label: "Imagem", type: "file" },
-    { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o nome de usuário" },
-    { id: "senha", label: "Senha", type: "password", placeholder: "Digite a senha" },
-    { id: "permissao", label: "Permissão", type: "select", placeholder: "Selecione uma permissão",
+      })),
+    },
+    {
+      id: "imagem", label: "Imagem", type: "file",
+    },
+    { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o usuário" },
+    { id: "senha", label: "Senha", type: "text", placeholder: "Digite a senha" },
+    {
+      id: "permissao", label: "Permissão", type: "select", placeholder: "Selecione uma permissão",
       options: [
         { value: "ADMIN", label: "Administrador" },
-        { value: "USER", label: "Usuário" },
+        { value: "USER", label: "Usuário Comum" },
         { value: "AUX", label: "Auxiliar" },
       ],
     },
@@ -64,9 +66,7 @@ const EditarCliente = () => {
   // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      //limpa os erros do zod e a mensagem
-      setMensagem(null);
-      setMensagemSucesso(null);
+      // Limpa os erros anteriores
       setErros({});
       // Valida os dados usando o Zod
       const validData = pessoaSchema.parse(data);
@@ -90,12 +90,12 @@ const EditarCliente = () => {
         imagem: base64Image || undefined,
       };
 
-      const response = await pessoaService.putEditarDados(id!, payload);
+      const response = await pessoaService.postAdicionarDados(payload);
       if (response) {
-        setMensagem("Cliente atualizado com sucesso!");
+        setMensagem("Cliente cadastrado com sucesso!");
         setMensagemSucesso(true); // Mensagem de sucesso
       } else {
-        setMensagem("Erro ao atualizar cliente.");
+        setMensagem("Erro ao cadastrar cliente.");
         setMensagemSucesso(false); // Mensagem de erro
       }
     } catch (error) {
@@ -114,8 +114,9 @@ const EditarCliente = () => {
     }
   };
 
+
   return (
-    <PageLayout titulo="Editar Cliente" rota="/listagem-clientes">
+    <PageLayout titulo="Cadastro de Cliente" rota="/listagem-clientes">
       <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
       {mensagem && (
         <div
@@ -127,6 +128,6 @@ const EditarCliente = () => {
       )}
     </PageLayout>
   );
-};
+}
 
-export default EditarCliente;
+export default TelaCadastro;
