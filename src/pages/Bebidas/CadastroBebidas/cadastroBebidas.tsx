@@ -58,7 +58,7 @@ const CadastroBebidas = () => {
 
       const payload = {
         ...validData,
-        imagem: base64Image || undefined,
+        imagem: base64Image as `data:image/${string};base64,${string}` || "",
         status: validData.status as "Ativo" | "Inativo",
       };
 
@@ -79,7 +79,7 @@ const CadastroBebidas = () => {
             fieldErrors[err.path[0]] = err.message;
           }
         });
-        setErros(fieldErrors); // Define erros para exibição no formulário
+        setErros(fieldErrors);
       } else {
         console.error("Erro ao cadastar bebida:", error);
         setMensagem("Ocorreu um erro ao salvar os dados.");
