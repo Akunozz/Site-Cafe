@@ -52,7 +52,7 @@ const TelaCadastro = () => {
       id: "imagem", label: "Imagem", type: "file",
     },
     { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o usuário" },
-    { id: "senha", label: "Senha", type: "text", placeholder: "Digite a senha" },
+    { id: "senha", label: "Senha", type: "password", placeholder: "Digite a senha" },
     {
       id: "permissao", label: "Permissão", type: "select", placeholder: "Selecione uma permissão",
       options: [
@@ -87,7 +87,7 @@ const TelaCadastro = () => {
       const payload = {
         ...validData,
         permissao: validData.permissao as "ADMIN" | "USER" | "AUX",
-        imagem: base64Image || undefined,
+        imagem: base64Image as `data:image/${string};base64,${string}` || "",
       };
 
       const response = await pessoaService.postAdicionarDados(payload);

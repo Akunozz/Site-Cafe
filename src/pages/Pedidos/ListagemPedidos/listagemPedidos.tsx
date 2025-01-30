@@ -8,12 +8,15 @@ import IPedido from "../../../interfaces/IPedido";
 import IPessoa from "../../../interfaces/IPessoa";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar/alterar";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
   const [pedidosFiltrados, setPedidosFiltrados] = useState<IPedido[]>([]);
   const [pessoas, setPessoas] = useState<IPessoa[]>([]);
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // busca os pedidos
   useEffect(() => {
@@ -30,6 +33,8 @@ function ListagemPedido() {
         setBebidas(bebidasResponse);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
+      } finally {
+        setLoading(false); // Finaliza o carregamento após buscar os dados
       }
     }
     fetchData();
@@ -77,7 +82,7 @@ function ListagemPedido() {
 
   // mensagem de carregamento
   if (pessoas.length === 0 || bebidas.length === 0) {
-    return <p className="text-2xl">Carregando dados...</p>;
+    <Skeleton className="w-[100px] h-[20px] rounded-full" />
   }
 
   // campo da listagem
@@ -107,7 +112,17 @@ function ListagemPedido() {
     <ListagemLayout
       titulo="Listagem de Pedidos" onFilterChange={handleFilterChange} 
       enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo">
-      <Tabela colunas={colunas} dados={pedidosFiltrados} renderLinha={renderLinha} />
+      {loading ? (
+        // Mostra Skeleton enquanto os dados carregam
+        <div className="flex flex-col gap-4">
+          {[...Array(13)].map((_, index) => (
+            <Skeleton key={index} className="w-full h-[40px] rounded-md" />
+          ))}
+        </div>
+      ) : (
+        // Mostra a tabela quando os dados forem carregados
+        <Tabela colunas={colunas} dados={pedidosFiltrados} renderLinha={renderLinha} />
+      )}
     </ListagemLayout>
   );
 }

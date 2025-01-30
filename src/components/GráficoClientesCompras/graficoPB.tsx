@@ -45,7 +45,7 @@ export function GraficoPB() {
     { nome: string; vezesComprou: number; fill: string }[]
   >([]);
   const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2024");
+  const [anoSelecionado, setAnoSelecionado] = useState("2025");
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [clienteMaisComprou, setClienteMaisComprou] = useState<string | null>(null);
@@ -138,7 +138,7 @@ export function GraficoPB() {
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
             <PieChart>
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-              <Pie data={chartData} dataKey="vezesComprou" nameKey="nome" label={({ vezesComprou }) => vezesComprou}/>
+              <Pie data={chartData} dataKey="vezesComprou" nameKey="nome" label={({ value }) =>value}/>
             </PieChart>
           </ChartContainer>
         )}

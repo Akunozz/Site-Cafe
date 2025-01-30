@@ -2,7 +2,8 @@ interface IBebida {
     id: string,
     nome: string,
     preco: number,
-    imagem: string,
+    descricao: string,
+    imagem: `data:image/${string};base64,${string}` | null,
     quantidade: number,
     status: "Ativo" | "Inativo"
 }

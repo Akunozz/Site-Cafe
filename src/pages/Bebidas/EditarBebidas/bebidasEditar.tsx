@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fileToBase64 } from "../../../utils/imageUtils";
 import Formulario from "../../../components/FormularioLayout/formularioLayout";
 import PageLayout from "../../../components/PageLayout/pageLayout";
 import { z } from "zod";
 import BebidaService from "../../../services/BebidaService";
 import { bebidaSchema } from "../../../schemas/bebidaSchema";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 type Campo<T> = {
   id: keyof T;
   label: string;
-  type: "text" | "password" | "select" | "file" | "number";
+  type: "text" | "password" | "select" | "file" | "number" | "textarea";
   placeholder?: string;
   options?: { value: string; label: string }[];
 };
@@ -23,11 +25,39 @@ const EditarBebida = () => {
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
+  const [valoresIniciais, setValoresIniciais] = useState<BebidaForm | null>(null);
+
+    // Buscar os dados do cliente pelo ID
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          const response = await BebidaService.getIdDados(id!);
+          if (response) {
+            setValoresIniciais({
+              nome: response.nome,
+              preco: response.preco,
+              descricao: response.descricao,
+              imagem: "",
+              quantidade: response.quantidade,
+              status: response.status,
+            });
+          } else {
+            alert("Não foi possível carregar os dados do cliente.");
+          }
+        } catch (error) {
+          alert("Não foi possível carregar os dados do cliente.");
+        }
+      }
+      if (id) {
+        fetchData();
+      }
+    }, [id]);
 
   // Configuração dos campos do formulário
   const campos: Campo<BebidaForm>[] = [
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida" },
     { id: "preco", label: "Preço", type: "number", placeholder: "Digite o preço da bebida" },
+    { id: "descricao", label:"Descrição", type: "textarea", placeholder: "Digite uma descrição"},
     { id: "imagem", label: "Imagem", type: "file" },
     { id: "status", label: "Status", type: "select", placeholder: "Selecione um status",
       options: [
@@ -59,7 +89,7 @@ const EditarBebida = () => {
 
       const payload = {
         ...validData,
-        imagem: base64Image || undefined,
+        imagem: base64Image as `data:image/${string};base64,${string}` || "",
         status: validData.status as "Ativo" | "Inativo",
       };
 
@@ -91,10 +121,22 @@ const EditarBebida = () => {
 
   return (
     <PageLayout titulo="Editar Bebida" rota="/listagem-bebidas">
-      <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
+     {valoresIniciais ? (
+        <Formulario
+          campos={campos}
+          onSubmit={(data) => handleSubmit(data)}
+          erros={erros}
+          valoresIniciais={valoresIniciais}
+        />
+      ) : (
+        <Skeleton className="w-[100px] h-[20px] rounded-full" />
+      )}
       {mensagem && (
         <div
-          className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          className={`mt-4 p-4 rounded-lg ${
+            mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}
+        >
           {mensagem}
         </div>
       )}

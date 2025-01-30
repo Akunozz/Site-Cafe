@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Pie, PieChart } from "recharts";
 import BebidaRelatorioService from "@/services/BebidaRelatorioService";
 import IBebidaRelatorio from "@/interfaces/IBebidaRelatorio";
+import { Skeleton } from "@/components/ui/skeleton"
+
 import {
   Card,
   CardContent,
@@ -21,8 +23,6 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from "@/components/ui/chart";
 
 const meses = [
@@ -37,7 +37,7 @@ const anos = ["2024", "2025"];
 export function GraficoBV() {
   const [chartData, setChartData] = useState<{ nome: string; vezesComprada: number; fill: string }[]>([]);
   const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2024");
+  const [anoSelecionado, setAnoSelecionado] = useState("2025");
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [bebidaMaisVendida, setbebidaMaisVendida] = useState<string | null>(null);
@@ -119,18 +119,14 @@ export function GraficoBV() {
         </div>
 
         {loading ? (
-          <p className="text-center text-gray-500">Carregando...</p>
+          <Skeleton className="w-[100px] h-[20px] rounded-full" />
         ) : mensagem ? (
           <p className="text-center text-gray-500">{mensagem}</p>
         ) : (
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
             <PieChart>
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-              <Pie data={chartData} dataKey="vezesComprada" nameKey="nome" label={({ vezesComprada }) => vezesComprada} />
-              <ChartLegend
-              content={<ChartLegendContent nameKey="nome" />}
-              className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
-            />
+              <Pie data={chartData} dataKey="vezesComprada" nameKey="nome" label={({ value }) => value} />
             </PieChart>
           </ChartContainer>
         )}

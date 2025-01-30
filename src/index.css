@@ -15,7 +15,7 @@
 }
 
 .item-lista {
-    @apply p-3 border font-medium text-laranjajava;
+    @apply p-4 border font-medium text-laranjajava;
 }
 
 .item-lista-header {

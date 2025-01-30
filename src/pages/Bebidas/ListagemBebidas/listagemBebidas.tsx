@@ -4,10 +4,13 @@ import Tabela from "../../../components/Tabela/tabela";
 import BebidaService from "../../../services/BebidaService";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar/alterar";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // busca as bebidas
   useEffect(() => {
@@ -18,6 +21,8 @@ function ListagemBebidas() {
         setBebidasFiltradas(response);
       } catch (error) {
         console.error("Erro ao buscar bebidas:", error);
+      } finally {
+        setLoading(false); // Finaliza o carregamento após buscar os dados
       }
     }
     fetchBebidas();
@@ -51,11 +56,12 @@ function ListagemBebidas() {
   };
 
   //campos da listagem
-  const colunas = ["Imagem", "Nome", "Preço", "ID", "Status", "Alterar"];
+  const colunas = ["Imagem", "Nome", "Descrição","Preço", "ID", "Status", "Alterar"];
   const renderLinha = (bebida: IBebida) => (
     <>
       <td className="item-lista">{bebida.imagem}</td>
       <td className="item-lista">{bebida.nome}</td>
+      <td className="item-lista">{bebida.descricao}</td>
       <td className="item-lista">R$ {bebida.preco}</td>
       <td className="item-lista">{bebida.id}</td>
       <td className="item-lista">
@@ -82,13 +88,18 @@ function ListagemBebidas() {
       titulo="Listagem de Bebidas"
       onFilterChange={handleFilterChange}
       enderecoAdicionar="/cadastro-bebidas"
-      textAdicionar="Cadastrar Nova"
-    >
-      <Tabela
-        colunas={colunas}
-        dados={bebidasFiltradas}
-        renderLinha={renderLinha}
-      />
+      textAdicionar="Cadastrar Nova">
+      {loading ? (
+        // Mostra Skeleton enquanto os dados carregam
+        <div className="flex flex-col gap-4">
+          {[...Array(13)].map((_, index) => (
+            <Skeleton key={index} className="w-full h-[40px] rounded-md" />
+          ))}
+        </div>
+      ) : (
+        // Mostra a tabela quando os dados forem carregados
+        <Tabela colunas={colunas} dados={bebidasFiltradas} renderLinha={renderLinha} />
+      )}
     </ListagemLayout>
   );
 }

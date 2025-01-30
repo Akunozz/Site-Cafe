@@ -10,5 +10,10 @@ interface IPedido {
         id: number;
         nome: string;
     };
+    bebida?: {
+        id: number;
+        nome: string;
+        preco: number;
+      };
 }
 export default IPedido;

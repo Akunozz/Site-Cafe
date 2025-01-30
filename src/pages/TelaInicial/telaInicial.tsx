@@ -1,6 +1,6 @@
 import { GraficoPB } from "@/components/GráficoClientesCompras/graficoPB";
 import { GraficoBV } from "@/components/GráficoBebidasVendidas/graficoBV";
-import { GraficoQP } from "@/components/GráficoPedidosRealizados/graficoqp";
+import { GraficoQP } from "@/components/GráficoPedidosRealizados/graficoQP";
 import NavBar from "@/components/NavBar/navbar";
 
 function TelaInicial() {
