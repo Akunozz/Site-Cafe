@@ -9,7 +9,7 @@ import { bebidaSchema } from "../../../schemas/bebidaSchema";
 type Campo<T> = {
   id: keyof T;
   label: string;
-  type: "number" | "text" | "file" | "checkbox" | "textarea" | "select";
+  type: "number" | "text" | "file" | "checkbox" | "textarea" | "select" | "float";
   placeholder?: string;
   defaultValue?: string | number | readonly string[] | undefined;
   options?: { value: string; label: string }[];
@@ -28,7 +28,7 @@ const CadastroBebidas = () => {
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida" },
     { id: "imagem", label: "Imagem", type: "file" },
     { id: "descricao", label: "Descrição", type: "textarea", placeholder: "Descrição da bebida" },
-    { id: "preco", label: "Preço", type: "number", placeholder: "Digite o preço" },
+    { id: "preco", label: "Preço", type: "float", placeholder: "Digite o preço" },
     { id: "status", label: "Status", type: "select", placeholder: "Selecione um status",
       options: [
         { value: "Ativo", label: "Ativo" },

@@ -14,16 +14,25 @@
     @apply flex min-h-screen bg-preto;
 }
 
-.item-lista {
-    @apply p-4 border font-medium text-laranjajava;
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
 }
 
-.item-lista-header {
-    @apply pb-3 pr-3 pl-3 pt-1 border-b text-lg font-bold text-azuljava;
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
 }
 
-.tabela {
-    @apply table-auto w-full text-center items-center border-collapse;
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #adadad;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: gray;
 }
 
 @layer base {
@@ -78,7 +87,23 @@
         --chart-5: 27 87% 67%;
 
         --radius: 0.5rem
-    }
+    ;
+
+        --sidebar-background: 0 0% 98%;
+
+        --sidebar-foreground: 240 5.3% 26.1%;
+
+        --sidebar-primary: 240 5.9% 10%;
+
+        --sidebar-primary-foreground: 0 0% 98%;
+
+        --sidebar-accent: 240 4.8% 95.9%;
+
+        --sidebar-accent-foreground: 240 5.9% 10%;
+
+        --sidebar-border: 220 13% 91%;
+
+        --sidebar-ring: 217.2 91.2% 59.8%}
   .dark {
 
         --background: 240 10% 3.9%;
@@ -128,7 +153,23 @@
         --chart-4: 280 65% 60%;
 
         --chart-5: 340 75% 55%
-    }
+    ;
+
+        --sidebar-background: 240 5.9% 10%;
+
+        --sidebar-foreground: 240 4.8% 95.9%;
+
+        --sidebar-primary: 224.3 76.3% 48%;
+
+        --sidebar-primary-foreground: 0 0% 100%;
+
+        --sidebar-accent: 240 3.7% 15.9%;
+
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+
+        --sidebar-border: 240 3.7% 15.9%;
+
+        --sidebar-ring: 217.2 91.2% 59.8%}
 }
 
 @layer base {

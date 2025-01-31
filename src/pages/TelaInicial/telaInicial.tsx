@@ -11,7 +11,7 @@ function TelaInicial() {
 
       {/* Conteúdo principal */}
       <main className="flex-1 p-8">
-        <h1 className="mr-16 items-center justify-center flex text-6xl font-bold text-white mb-6">Tela Inicial</h1>
+        <h1 className="flex text-4xl font-bold text-white mb-6">Tela Inicial</h1>
         
         {/* Grid de gráficos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

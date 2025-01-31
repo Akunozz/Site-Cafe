@@ -91,14 +91,14 @@ function ListagemPedido() {
   ];
   const renderLinha = (pedido: IPedido) => (
     <>
-      <td className="item-lista">{pedido.id}</td>
-      <td className="item-lista">{getPessoaNome(pedido.cliente_id)}</td>
-      <td className="item-lista">{getBebidaNome(pedido.bebida_id)}</td>
-      <td className="item-lista">R${pedido.unitario}</td>
-      <td className="item-lista">{pedido.quantidade}</td>
-      <td className="item-lista">R${pedido.total}</td>
-      <td className="item-lista">{pedido.data_compra}</td>
-      <td className="item-lista">
+      <td className="p-4">{pedido.id}</td>
+      <td>{getPessoaNome(pedido.cliente_id)}</td>
+      <td>{getBebidaNome(pedido.bebida_id)}</td>
+      <td>R${pedido.unitario}</td>
+      <td>{pedido.quantidade}</td>
+      <td>R${pedido.total}</td>
+      <td>{pedido.data_compra}</td>
+      <td>
         <Alterar
           rotaEdicao="/pedidos"
           idItem={pedido.id} 
@@ -111,7 +111,7 @@ function ListagemPedido() {
   return (
     <ListagemLayout
       titulo="Listagem de Pedidos" onFilterChange={handleFilterChange} 
-      enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo">
+      enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo Pedido">
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">

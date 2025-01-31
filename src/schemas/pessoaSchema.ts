@@ -7,4 +7,5 @@ export const pessoaSchema = z.object({
   usuario: z.string().min(1, "O usuário é obrigatório"),
   senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
   permissao: z.string().nonempty("Selecione uma permissão"),
+  status: z.string().nonempty("Selecione um status")
 });

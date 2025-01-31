@@ -4,15 +4,15 @@ import Tabela from "../../../components/Tabela/tabela";
 import BebidaService from "../../../services/BebidaService";
 import IBebida from "../../../interfaces/IBebida";
 import Alterar from "../../../components/Alterar/alterar";
-import { Skeleton } from "@/components/ui/skeleton"
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { Coffee } from "lucide-react";
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // busca as bebidas
+  // Busca as bebidas
   useEffect(() => {
     async function fetchBebidas() {
       try {
@@ -28,15 +28,15 @@ function ListagemBebidas() {
     fetchBebidas();
   }, []);
 
-  // exclui uma bebida
+  // Excluir uma bebida
   const excluirBebida = async (bebida: IBebida) => {
     if (window.confirm("Tem certeza que deseja excluir esta bebida?")) {
       try {
         const bebidaDeletada = await BebidaService.deleteDados(bebida.id);
         if (bebidaDeletada) {
-          const bebidaAtualizadas = bebidas.filter((c) => c.id !== bebida.id);
-          setBebidas(bebidaAtualizadas);
-          setBebidasFiltradas(bebidaAtualizadas);
+          const bebidasAtualizadas = bebidas.filter((c) => c.id !== bebida.id);
+          setBebidas(bebidasAtualizadas);
+          setBebidasFiltradas(bebidasAtualizadas);
         } else {
           alert("Erro ao deletar bebida.");
         }
@@ -47,35 +47,47 @@ function ListagemBebidas() {
     }
   };
 
-  // atualiza a lista filtrada
+  // Atualiza a lista filtrada
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = bebidas.filter((bebida) =>
-    bebida.nome.toLowerCase().includes(filtro));
+      bebida.nome.toLowerCase().includes(filtro)
+    );
     setBebidasFiltradas(resultadosFiltrados);
   };
 
-  //campos da listagem
-  const colunas = ["Imagem", "Nome", "Descrição","Preço", "ID", "Status", "Alterar"];
+  // Campos da listagem
+  const colunas = ["Imagem", "Nome", "Descrição", "Preço", "ID", "Status", "Alterar"];
   const renderLinha = (bebida: IBebida) => (
     <>
-      <td className="item-lista">{bebida.imagem}</td>
-      <td className="item-lista">{bebida.nome}</td>
-      <td className="item-lista">{bebida.descricao}</td>
-      <td className="item-lista">R$ {bebida.preco}</td>
-      <td className="item-lista">{bebida.id}</td>
-      <td className="item-lista">
+      <td>
+        {bebida.imagem ? (
+          <img
+            className="mx-auto rounded-md"
+            src={bebida.imagem}
+            alt="Imagem da bebida"
+            style={{ width: "50px", height: "50px" }}
+          />
+        ) : (
+          <Coffee className="w-[50px] h-[50px] text-azuljava mx-auto" />
+        )}
+      </td>
+      <td>{bebida.nome}</td>
+      <td>{bebida.descricao}</td>
+      <td>R$ {bebida.preco}</td>
+      <td>{bebida.id}</td>
+      <td>
         <span
           className={`${
             bebida.status === "Ativo" ? "text-green-500" : "text-red-500"
-          } font-bold`}
+          }`}
         >
           {bebida.status}
         </span>
       </td>
-      <td className="item-lista">
+      <td className="p-4">
         <Alterar
-          rotaEdicao="/bebidas/"
+          rotaEdicao="/bebidas"
           idItem={bebida.id}
           onExcluir={() => excluirBebida(bebida)}
         />
@@ -88,7 +100,8 @@ function ListagemBebidas() {
       titulo="Listagem de Bebidas"
       onFilterChange={handleFilterChange}
       enderecoAdicionar="/cadastro-bebidas"
-      textAdicionar="Cadastrar Nova">
+      textAdicionar="Cadastrar Nova Bebida"
+    >
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">

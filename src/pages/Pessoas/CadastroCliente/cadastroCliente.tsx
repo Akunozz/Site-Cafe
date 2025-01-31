@@ -61,6 +61,11 @@ const TelaCadastro = () => {
         { value: "AUX", label: "Auxiliar" },
       ],
     },
+    { id: "status", label: "Status", type: "select", placeholder: "Selecione um status",
+      options: [
+        { value: "Ativo", label: "Ativo" },
+        { value: "Inativo", label: "Inativo" },
+      ]}
   ];
 
   // Função de envio do formulário
@@ -76,10 +81,6 @@ const TelaCadastro = () => {
         const fileInput = (document.getElementById("imagem") as HTMLInputElement)
           .files?.[0];
         if (fileInput) {
-          if (fileInput.size > 1 * 1024 * 1024) {
-            alert("A imagem deve ter no máximo 1MB.");
-            return;
-          }
           base64Image = await fileToBase64(fileInput);
         }
       }
@@ -87,6 +88,7 @@ const TelaCadastro = () => {
       const payload = {
         ...validData,
         permissao: validData.permissao as "ADMIN" | "USER" | "AUX",
+        status: validData.status as "Ativo" | "Inativo",
         imagem: base64Image as `data:image/${string};base64,${string}` || "",
       };
 

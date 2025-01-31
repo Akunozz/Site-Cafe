@@ -1,25 +1,17 @@
-import React from "react";
-import back from "../../assets/svg/back.svg"
-
+import { CircleArrowLeft } from "lucide-react";
 
 interface BackProps {
   rota: string; // link para voltar para listagem
 }
 
 const Back: React.FC<BackProps> = ({ rota }) => {
+
   return (
-    <div>
-
-      {/* Botão de Adicionar */}
-      <a href={rota}>
-        <img
-          src={back}
-          alt="ícone de voltar"
-          className="w-8 h-8 cursor-pointer hover:opacity-70"
-        />
+    <a href={rota}>
+      <CircleArrowLeft 
+      size={36}
+      className="text-azuljava hover:size-10" />
       </a>
-
-    </div>
   );
 };
 

@@ -4,31 +4,31 @@ import Tabela from "../../../components/Tabela/tabela";
 import pessoaService from "../../../services/PessoaService";
 import IPessoa from "../../../interfaces/IPessoa";
 import Alterar from "../../../components/Alterar/alterar";
-import { Skeleton } from "@/components/ui/skeleton"
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { CircleUserRound } from "lucide-react";
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
   const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // busca os clientes
+  // Busca os clientes
   useEffect(() => {
     async function fetchClientes() {
-    try {
-      const response = await pessoaService.getListarDados();
-      setClientes(response);
-      setClientesFiltrados(response);
-    } catch (error) {
-      console.error("Erro ao buscar bebidas:", error);
-    } finally {
-      setLoading(false); // Finaliza o carregamento após buscar os dados
+      try {
+        const response = await pessoaService.getListarDados();
+        setClientes(response);
+        setClientesFiltrados(response);
+      } catch (error) {
+        console.error("Erro ao buscar clientes:", error);
+      } finally {
+        setLoading(false); // Finaliza o carregamento após buscar os dados
+      }
     }
-  }
     fetchClientes();
   }, []);
 
-  // excluir um cliente
+  // Excluir um cliente
   const excluirCliente = async (cliente: IPessoa) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
@@ -50,7 +50,7 @@ function ListagemClientes() {
     }
   };
 
-  // atualiza a lista filtrada
+  // Atualiza a lista filtrada
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = clientes.filter((cliente) =>
@@ -59,33 +59,51 @@ function ListagemClientes() {
     setClientesFiltrados(resultadosFiltrados);
   };
 
-  // campos da listagem
-  const colunas = ["ID", "Foto", "Nome", "Setor", "Alterar"];
+  // Campos da listagem
+  const colunas = ["ID", "Foto", "Nome", "Setor", "Status", "Alterar"];
   const renderLinha = (cliente: IPessoa) => (
     <>
-      <td className="item-lista">{cliente.id}</td>
-      <td className="item-lista flex justify-center">
-        <img
-          src={cliente.imagem || ''}
-          alt="Foto do cliente"
-          style={{ width: '75px', height: '75px' }}
-        />
+      <td className="p-5">{cliente.id}</td>
+      <td className="text-center">
+        {cliente.imagem ? (
+          <img
+            className="mx-auto rounded-full"
+            src={cliente.imagem}
+            alt="Foto do cliente"
+            style={{ width: "50px", height: "50px" }}
+          />
+        ) : (
+          <CircleUserRound className="w-[50px] h-[50px] text-azuljava mx-auto" />
+        )}
       </td>
-
-      <td className="item-lista">{cliente.nome}</td>
-      <td className="item-lista">{cliente.setor.nome}</td>
-      <td className="item-lista">
+      <td>{cliente.nome}</td>
+      <td>{cliente.setor.nome}</td>
+      <td>
+        <span
+          className={`${
+            cliente.status === "Ativo" ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {cliente.status}
+        </span>
+      </td>
+      <td>
         <Alterar
           rotaEdicao="/pessoas"
           idItem={cliente.id}
-          onExcluir={() => excluirCliente(cliente)} />
+          onExcluir={() => excluirCliente(cliente)}
+        />
       </td>
     </>
   );
 
   return (
-    <ListagemLayout titulo="Listagem de Clientes" onFilterChange={handleFilterChange}
-      textAdicionar="Cadastrar Novo" enderecoAdicionar="/cadastro-cliente">
+    <ListagemLayout
+      titulo="Listagem de Clientes"
+      onFilterChange={handleFilterChange}
+      textAdicionar="Cadastrar Novo Cliente"
+      enderecoAdicionar="/cadastro-cliente"
+    >
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">

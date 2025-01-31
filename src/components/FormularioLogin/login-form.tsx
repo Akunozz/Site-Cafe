@@ -30,14 +30,12 @@ export function LoginForm() {
 
   const onSubmit = async (data: { usuario: string; senha: string }) => {
     try {
-      console.log("Enviando dados para login:", data); // Debug
-      const response = await AuthService.login(data);
-      console.log("dados:", response)
-      if (!response || !response.token) {
-        setMensagemErro("Usuário ou senha incorretos.");
+      if (!data.senha) {
+        setMensagemErro("A senha é obrigatória.");
         return;
       }
 
+      const response = await AuthService.login(data);
       localStorage.setItem("token", response.token); // Salva o token no localStorage
       router.navigate({ to: "/inicial" }); // Redireciona para a página inicial
     } catch (error) {

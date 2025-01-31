@@ -22,7 +22,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ titulo, children, rota }) => {
               <Back rota={rota} />
 
             </div> )}
-        <h1 className="text-2xl font-bold mb-6 text-center mr-8 text-azuljava">
+        <h1 className="text-2xl font-bold mb-6 text-center text-azuljava">
 
           {titulo}
 

@@ -1,27 +1,22 @@
-import React from "react";
-import search from "../../assets/svg/search.svg";
-
+import { Input } from "@/components/ui/input";
 
 interface FiltroProps {
-  onFilterChange: (text: string) => void; // callback para enviar o texto filtrado ao componente pai
+  onFilterChange: (text: string) => void;
 }
 
 function Filtro({ onFilterChange }: FiltroProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange(e.target.value); // envia o valor para o componente pai
+    onFilterChange(e.target.value);
   };
 
   return (
-    <div className="flex mt-5 w-1/4 items-center border p-2 rounded-lg mr-auto bg-white">
-
-      <img src={search} alt="ícone da lupa" className="w-7 h-5" />
-      
-      <input
+    <div className="flex items-center w-1/4 mr-auto">
+      <Input
         type="text"
-        placeholder="Digite para filtrar"
-        className="ml-2 w-full focus:outline-none"
-        onChange={handleInputChange} />
-
+        placeholder="Digite para filtrar 🔎"
+        className="w-full bg-gray-50 border-2 border-azuljava focus:ring-azuljava focus:border-azuljava"
+        onChange={handleInputChange}
+      />
     </div>
   );
 }

@@ -6,8 +6,9 @@ import { z } from "zod";
 import pessoaService from "../../../services/PessoaService";
 import SetorService from "../../../services/SetorService";
 import { pessoaSchema } from "../../../schemas/pessoaSchema";
-import { Skeleton } from "@/components/ui/skeleton"
-
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 type Campo<T> = {
   id: keyof T;
@@ -23,7 +24,8 @@ type PessoaForm = z.infer<typeof pessoaSchema>;
 const EditarCliente = () => {
   const urlSegments = window.location.pathname.split("/");
   const id = urlSegments[urlSegments.length - 1];
-  
+
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]);
@@ -34,7 +36,7 @@ const EditarCliente = () => {
   useEffect(() => {
     async function fetchSetores() {
       try {
-        const response = await SetorService.getListarDados(); // Chama a API para listar setores
+        const response = await SetorService.getListarDados();
         setSetores(response);
       } catch (error) {
         alert("Não foi possível carregar os setores.");
@@ -56,7 +58,12 @@ const EditarCliente = () => {
             usuario: response.usuario,
             senha: "",
             permissao: response.permissao,
+            status: response.status
           });
+
+          if (response.imagem) {
+            setImagemPreview(response.imagem);
+          }
         } else {
           alert("Não foi possível carregar os dados do cliente.");
         }
@@ -68,6 +75,12 @@ const EditarCliente = () => {
       fetchData();
     }
   }, [id]);
+
+  // Função para excluir a imagem
+  const handleExcluirImagem = () => {
+    setImagemPreview(null); // Remove a pré-visualização
+    setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev); // Atualiza o estado removendo a imagem
+  };
 
   // Configuração dos campos do formulário
   const campos: Campo<PessoaForm>[] = [
@@ -84,7 +97,7 @@ const EditarCliente = () => {
     },
     { id: "imagem", label: "Imagem", type: "file" },
     { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o nome de usuário" },
-    { id: "senha", label: "Senha", type:"password", placeholder: "Digite a senha" },
+    { id: "senha", label: "Senha", type: "password", placeholder: "Digite a senha" },
     {
       id: "permissao",
       label: "Permissão",
@@ -96,6 +109,16 @@ const EditarCliente = () => {
         { value: "AUX", label: "Auxiliar" },
       ],
     },
+    {
+      id: "status",
+      label: "Status",
+      type: "select",
+      placeholder: "Selecione um status",
+      options: [
+        { value: "Ativo", label: "Ativo" },
+        { value: "Inativo", label: "Inativo" },
+      ],
+    }
   ];
 
   // Função de envio do formulário
@@ -104,18 +127,14 @@ const EditarCliente = () => {
       setMensagem(null);
       setMensagemSucesso(null);
       setErros({});
-      
+
       // Valida os dados usando o Zod
       const validData = pessoaSchema.parse(data);
 
-      let base64Image = "";
+      let base64Image = imagemPreview || "";
       if (validData.imagem) {
         const fileInput = (document.getElementById("imagem") as HTMLInputElement)?.files?.[0];
         if (fileInput) {
-          if (fileInput.size > 1 * 1024 * 1024) {
-            alert("A imagem deve ter no máximo 1MB.");
-            return;
-          }
           base64Image = await fileToBase64(fileInput);
         }
       }
@@ -123,6 +142,7 @@ const EditarCliente = () => {
       const payload = {
         ...validData,
         permissao: validData.permissao as "ADMIN" | "USER" | "AUX",
+        status: validData.status as "Ativo" | "Inativo",
         imagem: base64Image as `data:image/${string};base64,${string}` || "",
       };
 
@@ -151,6 +171,27 @@ const EditarCliente = () => {
 
   return (
     <PageLayout titulo="Editar Cliente" rota="/listagem-clientes">
+      {/* Visualização da imagem atual */}
+      {imagemPreview && (
+        <div className="mt-4 flex flex-col justify-center items-center gap-2">
+          <img
+            src={imagemPreview}
+            alt="Imagem do cliente"
+            className="w-36 h-36 rounded-md shadow-md"
+          />
+          <span className="text-gray-500 text-sm">Imagem atual</span>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="mt-2 flex items-center gap-2"
+            onClick={handleExcluirImagem}
+            type="button"
+          >
+            <Trash2 size={16} /> Remover Imagem
+          </Button>
+        </div>
+      )}
+
       {valoresIniciais ? (
         <Formulario
           campos={campos}
@@ -161,12 +202,9 @@ const EditarCliente = () => {
       ) : (
         <Skeleton className="w-[100px] h-[20px] rounded-full" />
       )}
+
       {mensagem && (
-        <div
-          className={`mt-4 p-4 rounded-lg ${
-            mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}
-        >
+        <div className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
           {mensagem}
         </div>
       )}
