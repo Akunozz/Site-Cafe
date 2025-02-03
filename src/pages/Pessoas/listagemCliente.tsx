@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ListagemLayout from "../../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../../components/Tabela/tabela";
-import pessoaService from "../../../services/PessoaService";
-import IPessoa from "../../../interfaces/IPessoa";
-import Alterar from "../../../components/Alterar/alterar";
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
+import Tabela from "../../components/Tabela/tabela";
+import pessoaService from "../../services/PessoaService";
+import IPessoa from "../../interfaces/IPessoa";
+import Alterar from "../../components/Alterar/alterar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CircleUserRound } from "lucide-react";
 
@@ -11,8 +11,10 @@ function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
   const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userPermission, setUserPermission] = useState<string | null>(null);
 
-  // Busca os clientes
+
+  // Busca os clientes e recupera a permissão do usuário
   useEffect(() => {
     async function fetchClientes() {
       try {
@@ -26,6 +28,9 @@ function ListagemClientes() {
       }
     }
     fetchClientes();
+
+    const perm = localStorage.getItem("permissao");
+    setUserPermission(perm);
   }, []);
 
   // Excluir um cliente
@@ -91,7 +96,11 @@ function ListagemClientes() {
         <Alterar
           rotaEdicao="/pessoas"
           idItem={cliente.id}
-          onExcluir={() => excluirCliente(cliente)}
+          onExcluir={
+            userPermission === "ADMIN"
+              ? () => excluirCliente(cliente)
+              : () => alert("Você não tem permissão para excluir este cliente.")
+          }
         />
       </td>
     </>

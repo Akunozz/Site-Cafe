@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import ListagemLayout from "../../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../../components/Tabela/tabela";
-import PedidoService from "../../../services/PedidoService";
-import PessoaService from "../../../services/PessoaService";
-import BebidaService from "../../../services/BebidaService";
-import IPedido from "../../../interfaces/IPedido";
-import IPessoa from "../../../interfaces/IPessoa";
-import IBebida from "../../../interfaces/IBebida";
-import Alterar from "../../../components/Alterar/alterar";
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
+import Tabela from "../../components/Tabela/tabela";
+import PedidoService from "../../services/PedidoService";
+import PessoaService from "../../services/PessoaService";
+import BebidaService from "../../services/BebidaService";
+import IPedido from "../../interfaces/IPedido";
+import IPessoa from "../../interfaces/IPessoa";
+import IBebida from "../../interfaces/IBebida";
+import Alterar from "../../components/Alterar/alterar";
 import { Skeleton } from "@/components/ui/skeleton"
 
 
@@ -17,8 +17,9 @@ function ListagemPedido() {
   const [pessoas, setPessoas] = useState<IPessoa[]>([]);
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userPermission, setUserPermission] = useState<string | null>(null);
 
-  // busca os pedidos
+  // busca os pedidos e recupera a permissão do usuário
   useEffect(() => {
     async function fetchData() {
       try {
@@ -37,6 +38,9 @@ function ListagemPedido() {
         setLoading(false); // Finaliza o carregamento após buscar os dados
       }
     }
+
+    const perm = localStorage.getItem("permissao");
+    setUserPermission(perm);
     fetchData();
   }, []);
 
@@ -75,7 +79,7 @@ function ListagemPedido() {
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = pedidos.filter((pedido) =>
-    getPessoaNome(pedido.cliente_id).toLowerCase().includes(filtro)
+      getPessoaNome(pedido.cliente_id).toLowerCase().includes(filtro)
     );
     setPedidosFiltrados(resultadosFiltrados);
   };
@@ -101,8 +105,12 @@ function ListagemPedido() {
       <td>
         <Alterar
           rotaEdicao="/pedidos"
-          idItem={pedido.id} 
-          onExcluir={() => excluirPedido(pedido)}
+          idItem={pedido.id}
+          onExcluir={
+            userPermission === "ADMIN" || userPermission === "AUX"
+              ? () => excluirPedido(pedido)
+              : () => alert("Você não tem permissão para excluir este pedido.")
+          }
         />
       </td>
     </>
@@ -110,7 +118,7 @@ function ListagemPedido() {
 
   return (
     <ListagemLayout
-      titulo="Listagem de Pedidos" onFilterChange={handleFilterChange} 
+      titulo="Listagem de Pedidos" onFilterChange={handleFilterChange}
       enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo Pedido">
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam

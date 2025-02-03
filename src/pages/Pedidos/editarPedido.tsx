@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import Formulario from "../../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../../components/PageLayout/pageLayout";
-import PedidoService from "../../../services/PedidoService";
-import BebidaService from "../../../services/BebidaService";
-import PessoaService from "../../../services/PessoaService";
+import Formulario from "../../components/FormularioLayout/formularioLayout";
+import PageLayout from "../../components/PageLayout/pageLayout";
+import PedidoService from "../../services/PedidoService";
+import BebidaService from "../../services/BebidaService";
+import PessoaService from "../../services/PessoaService";
 import { z } from "zod";
-import { pedidosEditarSchema } from "../../../schemas/pedidosEditarSchema";
+import { pedidosEditarSchema } from "../../schemas/pedidosEditarSchema";
 import { Skeleton } from "@/components/ui/skeleton"
 
 type Campo<T> = {

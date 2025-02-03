@@ -6,13 +6,10 @@ interface ILogin{
         permissao: string;
         setor: string;
         imagem: string;
-        pedidosNoMes: string;
+        pedidosNoMes: string | null;
     };
     token: string;
     tipo: string;
-
-    usuario: string,
-    senha:string
 }
 
 export default ILogin

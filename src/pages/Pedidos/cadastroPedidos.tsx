@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import Formulario from "../../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../../components/PageLayout/pageLayout";
-import PessoaService from "../../../services/PessoaService";
-import BebidaService from "../../../services/BebidaService";
-import PedidoService from "../../../services/PedidoService";
+import Formulario from "../../components/FormularioLayout/formularioLayout";
+import PageLayout from "../../components/PageLayout/pageLayout";
+import PessoaService from "../../services/PessoaService";
+import BebidaService from "../../services/BebidaService";
+import PedidoService from "../../services/PedidoService";
 import { z } from "zod";
-import { pedidosSchema } from "../../../schemas/pedidosSchema";
+import { pedidosSchema } from "../../schemas/pedidosSchema";
 
 type Campo<T> = {
   id: keyof T;

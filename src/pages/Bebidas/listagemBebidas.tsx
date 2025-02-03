@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ListagemLayout from "../../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../../components/Tabela/tabela";
-import BebidaService from "../../../services/BebidaService";
-import IBebida from "../../../interfaces/IBebida";
-import Alterar from "../../../components/Alterar/alterar";
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
+import Tabela from "../../components/Tabela/tabela";
+import BebidaService from "../../services/BebidaService";
+import IBebida from "../../interfaces/IBebida";
+import Alterar from "../../components/Alterar/alterar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Coffee } from "lucide-react";
 
@@ -11,8 +11,9 @@ function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userPermission, setUserPermission] = useState<string | null>(null);
 
-  // Busca as bebidas
+  // Busca as bebidas e recupera a permissão do usuário
   useEffect(() => {
     async function fetchBebidas() {
       try {
@@ -22,13 +23,16 @@ function ListagemBebidas() {
       } catch (error) {
         console.error("Erro ao buscar bebidas:", error);
       } finally {
-        setLoading(false); // Finaliza o carregamento após buscar os dados
+        setLoading(false);
       }
     }
     fetchBebidas();
+    
+    const perm = localStorage.getItem("permissao");
+    setUserPermission(perm);
   }, []);
 
-  // Excluir uma bebida
+  // Função para excluir uma bebida
   const excluirBebida = async (bebida: IBebida) => {
     if (window.confirm("Tem certeza que deseja excluir esta bebida?")) {
       try {
@@ -47,7 +51,7 @@ function ListagemBebidas() {
     }
   };
 
-  // Atualiza a lista filtrada
+  // Atualiza a lista filtrada conforme o filtro
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = bebidas.filter((bebida) =>
@@ -56,8 +60,10 @@ function ListagemBebidas() {
     setBebidasFiltradas(resultadosFiltrados);
   };
 
-  // Campos da listagem
+  // Definição das colunas da tabela
   const colunas = ["Imagem", "Nome", "Descrição", "Preço", "ID", "Status", "Alterar"];
+
+  // Renderiza cada linha da tabela
   const renderLinha = (bebida: IBebida) => (
     <>
       <td>
@@ -77,11 +83,7 @@ function ListagemBebidas() {
       <td>R$ {bebida.preco}</td>
       <td>{bebida.id}</td>
       <td>
-        <span
-          className={`${
-            bebida.status === "Ativo" ? "text-green-500" : "text-red-500"
-          }`}
-        >
+        <span className={`${bebida.status === "Ativo" ? "text-green-500" : "text-red-500"}`}>
           {bebida.status}
         </span>
       </td>
@@ -89,7 +91,11 @@ function ListagemBebidas() {
         <Alterar
           rotaEdicao="/bebidas"
           idItem={bebida.id}
-          onExcluir={() => excluirBebida(bebida)}
+          onExcluir={
+            userPermission === "ADMIN"
+              ? () => excluirBebida(bebida)
+              : () => alert("Você não tem permissão para excluir esta bebida.")
+          }
         />
       </td>
     </>
@@ -103,14 +109,12 @@ function ListagemBebidas() {
       textAdicionar="Cadastrar Nova Bebida"
     >
       {loading ? (
-        // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">
           {[...Array(13)].map((_, index) => (
             <Skeleton key={index} className="w-full h-[40px] rounded-md" />
           ))}
         </div>
       ) : (
-        // Mostra a tabela quando os dados forem carregados
         <Tabela colunas={colunas} dados={bebidasFiltradas} renderLinha={renderLinha} />
       )}
     </ListagemLayout>
