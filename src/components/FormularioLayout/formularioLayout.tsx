@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Path, DefaultValues } from "react-hook-form";
-import Botao from "../BotaoFormulario/botaoFormulario";
-import { FieldValues } from "react-hook-form";
+import { useForm, SubmitHandler, Path, DefaultValues, FieldValues } from "react-hook-form";
 import { fileToBase64 } from "@/utils/imageUtils";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
@@ -16,10 +14,10 @@ interface Campo {
 }
 
 interface FormularioProps<T extends FieldValues> {
-  campos: Campo[];
-  onSubmit: SubmitHandler<T>;
-  erros?: Record<string, string>;
-  valoresIniciais?: DefaultValues<T>;
+  campos: Campo[]
+  onSubmit: SubmitHandler<T>
+  erros?: Record<string, string>
+  valoresIniciais?: DefaultValues<T>
 }
 
 const Formulario = <T extends FieldValues>({
@@ -32,9 +30,9 @@ const Formulario = <T extends FieldValues>({
     defaultValues: valoresIniciais as DefaultValues<T>,
   });
 
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const [precoFixo, setPrecoFixo] = useState(false);
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+  const [precoFixo, setPrecoFixo] = useState(false)
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null)
 
   // Atualiza os valores dos campos ao carregar
   useEffect(() => {
@@ -200,10 +198,15 @@ const Formulario = <T extends FieldValues>({
           )}
         </div>
       ))}
-
-      <Botao text="Enviar" />
+      <div className="flex justify-center">
+      <Button className="w-1/2 bg-azuljava text-white py-3 font-medium rounded-lg hover:bg-laranjajava transition duration-300"
+        size="lg"
+        type="submit" >
+        Enviar
+      </Button>
+      </div>
     </form>
   );
 };
 
-export default Formulario;
+export default Formulario

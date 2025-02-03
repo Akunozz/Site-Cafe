@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "@tanstack/react-router";
-import { loginSchema } from "@/schemas/loginSchema";
-import AuthService from "@/services/AuthService";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "@tanstack/react-router"
+import { loginSchema } from "@/schemas/loginSchema"
+import AuthService from "@/services/AuthService"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import cafe from "../../assets/imagens/cafe.png";
-import cafe_fundo2 from "../../assets/imagens/cafe_fundo2.jpg";
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import cafe from "../../assets/imagens/cafe.png"
+import cafe_fundo2 from "../../assets/imagens/cafe_fundo2.jpg"
 
 function TelaLogin() {
-  const router = useRouter();
-  const [mensagemErro, setMensagemErro] = useState<string | null>(null);
+  const router = useRouter()
+  const [mensagemErro, setMensagemErro] = useState<string | null>(null)
 
   const {
     register,
@@ -32,30 +32,19 @@ function TelaLogin() {
   const onSubmit = async (data: { usuario: string; senha: string }) => {
     try {
       if (!data.senha) {
-        setMensagemErro("A senha é obrigatória.");
-        return;
+        setMensagemErro("A senha é obrigatória.")
+        return
       }
-  
-      const response = await AuthService.login(data);
-  
-      // Define a expiração para 1 hora (3600000 ms)
-      const expirationTime = Date.now() + 3600000;
-  
-      // Armazena os dados essenciais no localStorage
-      localStorage.setItem(
-        "userData",
-        JSON.stringify({ 
-          permissao: response.pessoa.permissao,
-          expiresAt: expirationTime
-        })
-      );
-  
-      router.navigate({ to: "/inicial" }); // Redireciona para a página inicial
+      const response = await AuthService.login(data)
+      localStorage.setItem("token", response.token)
+      localStorage.setItem("permissao", response.pessoa.permissao)
+      localStorage.setItem("loginData", JSON.stringify(response))
+      router.navigate({ to: "/inicial" })
     } catch (error) {
-      setMensagemErro("Usuário ou senha inválidos. Tente novamente.");
+      setMensagemErro("Usuário ou senha inválidos. Tente novamente.")
     }
   };
-
+  
   return (
     <div
       className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-center"
@@ -81,7 +70,7 @@ function TelaLogin() {
                       Usuário
                     </Label>
                     <Input
-                      className="border-laranjajava focus:ring-laranjajava"
+                      className="border-laranjajava focus:border-laranjajava"
                       id="usuario"
                       type="text"
                       placeholder="exemplo.exemplo"
@@ -139,7 +128,7 @@ function TelaLogin() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default TelaLogin;
+export default TelaLogin

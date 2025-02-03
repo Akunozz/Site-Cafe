@@ -45,10 +45,10 @@ export function GraficoPB() {
     { nome: string; vezesComprou: number; fill: string }[]
   >([]);
   const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2025");
+  const [anoSelecionado, setAnoSelecionado] = useState("2024");
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
-  const [clienteMaisComprou, setClienteMaisComprou] = useState<string | null>(null);
+  const [clienteMaisComprou, setClienteMaisComprou] = useState<{ nome: string; imagem: string } | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -60,9 +60,9 @@ export function GraficoPB() {
         );
 
         if (response.length === 0) {
-          setChartData([]);
-          setMensagem("Nenhum pedido foi realizado neste período.");
-          setClienteMaisComprou(null); // Resetar quando não houver dados
+          setChartData([])
+          setMensagem("Nenhum pedido foi realizado neste período.")
+          setClienteMaisComprou(null)
         } else {
           const colors = [
             "#4F46E5", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#ade4b5",
@@ -83,7 +83,7 @@ export function GraficoPB() {
             pedido.vezesComprou > max.vezesComprou ? pedido : max
           );
 
-          setClienteMaisComprou(clienteMaisComprou.nome);
+          setClienteMaisComprou({ nome: clienteMaisComprou.nome, imagem: clienteMaisComprou.imagem });
         }
       } catch (error) {
         console.error("Erro ao buscar dados do relatório:", error);
@@ -102,7 +102,7 @@ export function GraficoPB() {
   } satisfies ChartConfig;
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col w-full">
       <CardHeader className="items-center pb-5">
         <CardTitle>Clientes que mais compraram bebidas em {meses.find(m => m.value === mesSelecionado)?.label} {anoSelecionado}</CardTitle>
       </CardHeader>
@@ -138,16 +138,17 @@ export function GraficoPB() {
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
             <PieChart>
               <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-              <Pie data={chartData} dataKey="vezesComprou" nameKey="nome" label={({ value }) =>value}/>
+              <Pie data={chartData} dataKey="vezesComprou" nameKey="nome" label={({ value }) => value} />
             </PieChart>
           </ChartContainer>
         )}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         {clienteMaisComprou && (
-          <div className="text-laranjajava font-medium">
-            Cliente que mais comprou: {clienteMaisComprou}
-          </div>
+          <div className="flex flex-col items-center">
+          <div className="text-laranjajava font-medium">Cliente que mais comprou: {clienteMaisComprou.nome}</div>
+          <img src={clienteMaisComprou.imagem} alt={clienteMaisComprou.nome} className="w-32 h-32 mt-2 rounded-lg shadow-md" />
+        </div>
         )}
       </CardFooter>
     </Card>

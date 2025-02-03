@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayout/pageLayout";
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
 import PessoaService from "../../services/PessoaService";
 import BebidaService from "../../services/BebidaService";
 import PedidoService from "../../services/PedidoService";

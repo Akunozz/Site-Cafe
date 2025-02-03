@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Home, Users, Coffee, ClipboardList, ChevronDown } from "lucide-react"; // Ícones para os menus
+import { Home, Users, Coffee, ClipboardList, ChevronDown } from "lucide-react"
 
 function NavBar() {
   const [isNavOpen, setIsNavOpen] = useState(false);

@@ -37,10 +37,10 @@ const anos = ["2024", "2025"];
 export function GraficoBV() {
   const [chartData, setChartData] = useState<{ nome: string; vezesComprada: number; fill: string }[]>([]);
   const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2025");
+  const [anoSelecionado, setAnoSelecionado] = useState("2024");
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
-  const [bebidaMaisVendida, setbebidaMaisVendida] = useState<string | null>(null);
+  const [bebidaMaisVendida, setBebidaMaisVendida] = useState<{ nome: string; imagem: string } | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,8 +52,9 @@ export function GraficoBV() {
         );
 
         if (response.length === 0) {
-          setChartData([]);
-          setMensagem("Nenhuma bebida foi vendida neste período.");
+          setChartData([])
+          setMensagem("Nenhuma bebida foi vendida neste período.")
+          setBebidaMaisVendida(null)
         } else {
           const colors = ["#4F46E5", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#ade4b5",
             "#ffabab", "#ffdaab", "#ddffab", "#abe4ff", "#d9abff"];
@@ -70,7 +71,7 @@ export function GraficoBV() {
           const bebidaMaisVendida = response.reduce((max, pedido) =>
             pedido.quantidade > max.quantidade ? pedido : max
           );
-          setbebidaMaisVendida(bebidaMaisVendida.nome);
+          setBebidaMaisVendida({ nome: bebidaMaisVendida.nome, imagem: bebidaMaisVendida.imagem });
 
         }
       } catch (error) {
@@ -90,7 +91,7 @@ export function GraficoBV() {
   } satisfies ChartConfig;
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col w-full">
       <CardHeader className="items-center pb-5">
         <CardTitle>Bebidas mais vendidas em {meses.find(m => m.value === mesSelecionado)?.label} {anoSelecionado}</CardTitle>
       </CardHeader>
@@ -133,8 +134,9 @@ export function GraficoBV() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
       {bebidaMaisVendida && (
-          <div className="text-laranjajava font-medium">
-            Bebida mais vendida: {bebidaMaisVendida}
+          <div className="flex flex-col items-center">
+            <div className="text-laranjajava font-medium">Bebida mais vendida: {bebidaMaisVendida.nome}</div>
+            <img src={bebidaMaisVendida.imagem} alt={bebidaMaisVendida.nome} className="w-32 h-32 mt-2 rounded-lg shadow-md" />
           </div>
         )}
       </CardFooter>

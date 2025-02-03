@@ -54,7 +54,7 @@ const meses = [
 export function GraficoQP() {
   const [chartData, setChartData] = useState<{ anoMes: string; totalVendas: number; fill: string }[]>([]);
   const [mesInicial, setMesInicial] = useState("2024-01");
-  const [mesFinal, setMesFinal] = useState("2025-01");
+  const [mesFinal, setMesFinal] = useState("2025-02");
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [mesAnoMaisPedidos, setMesAnoMaisPedidos] = useState<string | null>(null); // Novo estado
 
@@ -103,7 +103,7 @@ export function GraficoQP() {
   } satisfies ChartConfig;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-center">Quantidade de pedidos realizados entre {meses.find(m => m.value === mesInicial)?.label} - {meses.find(m => m.value === mesFinal)?.label}</CardTitle>      
       </CardHeader>

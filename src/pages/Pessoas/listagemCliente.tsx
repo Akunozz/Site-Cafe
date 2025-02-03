@@ -65,7 +65,7 @@ function ListagemClientes() {
   };
 
   // Campos da listagem
-  const colunas = ["ID", "Foto", "Nome", "Setor", "Status", "Alterar"];
+  const colunas = ["ID", "Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"];
   const renderLinha = (cliente: IPessoa) => (
     <>
       <td className="p-5">{cliente.id}</td>
@@ -83,6 +83,7 @@ function ListagemClientes() {
       </td>
       <td>{cliente.nome}</td>
       <td>{cliente.setor.nome}</td>
+      <td>{cliente.permissao}</td>
       <td>
         <span
           className={`${

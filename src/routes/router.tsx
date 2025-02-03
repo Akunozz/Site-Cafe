@@ -12,7 +12,6 @@ import EditarCliente from "../pages/Pessoas/editarCliente";
 import EditarBebida from "../pages/Bebidas/bebidasEditar";
 import EditarPedido from "../pages/Pedidos/editarPedido";
 import ProtectedRoute from "@/contexts/ProtectedRoute";
-import RequireAuth from "@/contexts/RequireAuth";
 
 // Rotas de Pessoas
 const pessoasRoutes = [
@@ -20,31 +19,29 @@ const pessoasRoutes = [
     getParentRoute: () => RootRoute,
     path: "/listagem-clientes",
     component: () => (
-      <RequireAuth>
+      
         <ListagemClientes />
-      </RequireAuth>
+      
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/cadastro-cliente",
     component: () => (
-      <RequireAuth>
         <ProtectedRoute allowedPermissions={["ADMIN"]}>
           <CadastroCliente />
         </ProtectedRoute>
-      </RequireAuth>
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/pessoas/${cliente.id}",
     component: () => (
-      <RequireAuth>
+      
         <ProtectedRoute allowedPermissions={["ADMIN", "AUX"]}>
           <EditarCliente />
         </ProtectedRoute>
-      </RequireAuth>
+      
     ),
   }),
 ];
@@ -55,31 +52,25 @@ const bebidasRoutes = [
     getParentRoute: () => RootRoute,
     path: "/listagem-bebidas",
     component: () => (
-      <RequireAuth>
         <ListagemBebidas />
-      </RequireAuth>
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/cadastro-bebidas",
     component: () => (
-      <RequireAuth>
         <ProtectedRoute allowedPermissions={["ADMIN"]}>
           <CadastroBebidas />
         </ProtectedRoute>
-      </RequireAuth>
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/bebidas/${bebida.id}",
     component: () => (
-      <RequireAuth>
         <ProtectedRoute allowedPermissions={["ADMIN", "AUX"]}>
           <EditarBebida />
         </ProtectedRoute>
-      </RequireAuth>
     ),
   }),
 ];
@@ -90,31 +81,25 @@ const pedidosRoutes = [
     getParentRoute: () => RootRoute,
     path: "/listagem-pedidos",
     component: () => (
-      <RequireAuth>
         <ListagemPedidos />
-      </RequireAuth>
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/cadastro-pedidos",
     component: () => (
-      <RequireAuth>
         <ProtectedRoute allowedPermissions={["ADMIN", "AUX"]}>
           <CadastroPedido />
         </ProtectedRoute>
-      </RequireAuth>
     ),
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/pedidos/${pedido.id}",
     component: () => (
-      <RequireAuth>
         <ProtectedRoute allowedPermissions={["ADMIN", "AUX"]}>
           <EditarPedido />
         </ProtectedRoute>
-      </RequireAuth>
     ),
   }),
 ];
@@ -124,15 +109,13 @@ const generalRoutes = [
   new Route({
     getParentRoute: () => RootRoute,
     path: "/",
-    component: TelaLogin, // Login não precisa de autenticação
+    component: TelaLogin,
   }),
   new Route({
     getParentRoute: () => RootRoute,
     path: "/inicial",
     component: () => (
-      <RequireAuth>
         <TelaInicial />
-      </RequireAuth>
     ),
   }),
 ];

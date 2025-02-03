@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fileToBase64 } from "../../utils/imageUtils";
 import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayout/pageLayout";
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
 import { z } from "zod";
 import BebidaService from "../../services/BebidaService";
 import { bebidaSchema } from "../../schemas/bebidaSchema";
