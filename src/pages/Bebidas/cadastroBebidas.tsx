@@ -5,6 +5,7 @@ import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
 import { z } from "zod";
 import bebidaService from "../../services/BebidaService";
 import { bebidaSchema } from "../../schemas/bebidaSchema";
+import { toast } from "sonner";
 
 type Campo<T> = {
   id: keyof T;
@@ -20,8 +21,6 @@ type Campo<T> = {
 type BebidaForm = z.infer<typeof bebidaSchema>;
 
 const CadastroBebidas = () => {
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
   
   const campos: Campo<BebidaForm>[] = [
@@ -38,9 +37,7 @@ const CadastroBebidas = () => {
 
   const handleSubmit = async (data: any) => {
     try {
-      //limpa os erros do zod e a mensagem
-      setMensagem(null);
-      setMensagemSucesso(null);
+      //limpa os erros do zod
       setErros({});
       // Validação com zod
       const validData = bebidaSchema.parse(data);
@@ -64,11 +61,9 @@ const CadastroBebidas = () => {
 
       const response = await bebidaService.postAdicionarDados(payload);
       if (response) {
-        setMensagem("Bebida cadastrada com sucesso!");
-        setMensagemSucesso(true);
+        toast.success("Bebida cadastrada com sucesso!");
       } else {
-        setMensagem("Erro ao cadastrar bebida.");
-        setMensagemSucesso(false);
+        toast.error("Erro ao cadastrar bebida.");
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -81,9 +76,7 @@ const CadastroBebidas = () => {
         });
         setErros(fieldErrors);
       } else {
-        console.error("Erro ao cadastar bebida:", error);
-        setMensagem("Ocorreu um erro ao salvar os dados.");
-        setMensagemSucesso(false);
+        toast.error("Ocorreu um erro ao salvar os dados.");
       }
     }
   };
@@ -91,12 +84,6 @@ const CadastroBebidas = () => {
   return (
     <PageLayout titulo="Cadastro de Bebida" rota="/listagem-bebidas">
       <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
-      {mensagem && (
-        <div
-          className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-          {mensagem}
-        </div>
-      )}
     </PageLayout>
   );
 }

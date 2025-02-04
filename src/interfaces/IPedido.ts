@@ -14,6 +14,8 @@ interface IPedido {
         id: number;
         nome: string;
         preco: number;
-      };
+    };
+    anoMes: string;
+        totalVendas: number;
 }
 export default IPedido;

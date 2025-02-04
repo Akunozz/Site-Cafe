@@ -1,6 +1,7 @@
-import React from "react";
-import NavBar from "../NavBar/navbar";
+import React from "react"
+import NavBar from "../NavBar/navbar"
 import Back from "../Back/back"
+import { Toaster } from "sonner"
 
 interface PageLayoutProps {
   titulo: string;             // h1 da página
@@ -10,29 +11,31 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ titulo, children, rota }) => {
   return (
+    <>
+      <Toaster position="top-right" richColors />
+      <div className="navbar">
+        <NavBar />
 
-    <div className="navbar">
-    <NavBar />
+        <div className="flex-1 flex justify-center items-center bg-preto p-4">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mr-16">
+            {rota && (
+              <div className="float-left absolute">
 
-    <div className="flex-1 flex justify-center items-center bg-preto p-4">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mr-16">
-                 {rota && (
-            <div className="float-left absolute">
+                <Back rota={rota} />
 
-              <Back rota={rota} />
+              </div>)}
+            <h1 className="text-2xl font-bold mb-6 text-center text-azuljava">
 
-            </div> )}
-        <h1 className="text-2xl font-bold mb-6 text-center text-azuljava">
+              {titulo}
 
-          {titulo}
+            </h1>
 
-        </h1>
+            {children}
 
-        {children}
-
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
+    </>
   );
 };
 

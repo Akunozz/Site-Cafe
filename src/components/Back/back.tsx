@@ -1,3 +1,4 @@
+//componente utilzado nas telas de cadastro
 import { CircleArrowLeft } from "lucide-react";
 
 interface BackProps {

@@ -44,17 +44,17 @@ function TelaInicial() {
                 className="rounded-full border-2 border-azuljava"
                 src={loginData.pessoa.imagem}
                 alt="Foto do cliente"
-                style={{ width: "150px", height: "150px" }}
+                style={{ width: "100px", height: "100px" }}
               />
             ) : (
-              <CircleUserRound className="w-[150px] h-[150px] text-azuljava" />
+              <CircleUserRound className="w-[100px] h-[100px] text-azuljava" />
             )}
           </div>
 
           {/* Logo da Cafeteria */}
           <div className="flex flex-col items-center text-white">
-            <img src={cafe} alt="Cafeteria Java" className="h-32 w-32 mr-24" />
-            <h1 className="text-lg font-bold p-2 mr-24">Cafeteria Java</h1>
+            <img src={cafe} alt="Cafeteria Java" className="h-24 w-24 mr-12" />
+            <h1 className="text-lg font-bold p-2 mr-12">Cafeteria Java</h1>
           </div>
 
           {/* Botão de Sair */}

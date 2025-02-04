@@ -6,13 +6,13 @@ import IPessoa from "../../interfaces/IPessoa";
 import Alterar from "../../components/Alterar/alterar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CircleUserRound } from "lucide-react";
+import BotaoSetores from "@/components/BotaoSetores/botaoSetores";
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
   const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([]);
   const [loading, setLoading] = useState(true);
   const [userPermission, setUserPermission] = useState<string | null>(null);
-
 
   // Busca os clientes e recupera a permissão do usuário
   useEffect(() => {
@@ -65,11 +65,10 @@ function ListagemClientes() {
   };
 
   // Campos da listagem
-  const colunas = ["ID", "Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"];
+  const colunas = ["Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"];
   const renderLinha = (cliente: IPessoa) => (
     <>
-      <td className="p-5">{cliente.id}</td>
-      <td className="text-center">
+      <td className="text-center p-2">
         {cliente.imagem ? (
           <img
             className="mx-auto rounded-full"
@@ -113,7 +112,8 @@ function ListagemClientes() {
       onFilterChange={handleFilterChange}
       textAdicionar="Cadastrar Novo Cliente"
       enderecoAdicionar="/cadastro-cliente"
-    >
+      botaoSetor={<BotaoSetores/>}
+      >
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">

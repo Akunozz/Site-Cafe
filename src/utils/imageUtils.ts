@@ -8,7 +8,7 @@ import imageCompression from "browser-image-compression";
 export const fileToBase64 = async (file: File): Promise<string> => {
     // Define os limites
     const LIMITE_MAXIMO_MB = 1.5; // Máximo permitido para evitar erro 413
-    const MAX_SIZE = 800; // Tamanho máximo da imagem (px)
+    const MAX_SIZE = 1500; // Tamanho máximo da imagem (px)
     const QUALITY = 0.7; // Qualidade da compressão (70%)
 
     if (file.size > LIMITE_MAXIMO_MB * 1024 * 1024) {

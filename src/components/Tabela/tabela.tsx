@@ -1,26 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface TabelaProps {
-  colunas: string[]; // Vetor de colunas
-  dados: any[]; // Vetor de dados da tabela
-  renderLinha: (item: any) => React.ReactNode; // Função para renderizar cada linha
-  itensPorPagina?: number; // Número de itens por página (padrão: 10)
+  colunas: string[]; 
+  dados?: any[]; 
+  renderLinha: (item: any) => React.ReactNode; 
+  itensPorPagina?: number; 
+  children?: React.ReactNode;
 }
 
-const Tabela: React.FC<TabelaProps> = ({ colunas, dados, renderLinha, itensPorPagina = 10 }) => {
+const Tabela: React.FC<TabelaProps> = ({
+  colunas,
+  dados = [],
+  renderLinha,
+  itensPorPagina = 10,
+}) => {
   const [paginaAtual, setPaginaAtual] = useState(1);
+
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [dados]);
+
   const totalPaginas = Math.ceil(dados.length / itensPorPagina);
 
-  // Obtém os itens da página atual
+  // Itens da página atual
   const indiceInicial = (paginaAtual - 1) * itensPorPagina;
   const indiceFinal = indiceInicial + itensPorPagina;
   const dadosPaginados = dados.slice(indiceInicial, indiceFinal);
 
   return (
     <div className="flex flex-col items-center w-full p-2 font-medium">
-      {/* Tabela */}
       <Table className="text-center border-gray-300 text-laranjajava">
         <TableHeader>
           <TableRow>
@@ -40,10 +50,10 @@ const Tabela: React.FC<TabelaProps> = ({ colunas, dados, renderLinha, itensPorPa
         </TableBody>
       </Table>
 
-      {/* Controles de Paginação */}
+      {/* Paginação */}
       <div className="mt-4 flex items-center gap-4">
         <Button
-          className="hover:bg-azuljava hover:text-white"
+          className="bg-azuljava hover:bg-laranjajava text-white"
           variant="outline"
           disabled={paginaAtual === 1}
           onClick={() => setPaginaAtual(paginaAtual - 1)}
@@ -56,7 +66,7 @@ const Tabela: React.FC<TabelaProps> = ({ colunas, dados, renderLinha, itensPorPa
         </span>
 
         <Button
-          className="hover:bg-azuljava hover:text-white"
+          className="bg-azuljava hover:bg-laranjajava text-white"
           variant="outline"
           disabled={paginaAtual === totalPaginas}
           onClick={() => setPaginaAtual(paginaAtual + 1)}

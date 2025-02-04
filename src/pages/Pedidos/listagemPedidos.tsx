@@ -9,7 +9,7 @@ import IPessoa from "../../interfaces/IPessoa";
 import IBebida from "../../interfaces/IBebida";
 import Alterar from "../../components/Alterar/alterar";
 import { Skeleton } from "@/components/ui/skeleton"
-
+import BotaoPedido from "@/components/BotaoRelatorio/botaoRelatorio";
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
@@ -91,12 +91,11 @@ function ListagemPedido() {
 
   // campo da listagem
   const colunas = [
-    "Pedido ID", "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar"
+    "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar"
   ];
   const renderLinha = (pedido: IPedido) => (
     <>
-      <td className="p-4">{pedido.id}</td>
-      <td>{getPessoaNome(pedido.cliente_id)}</td>
+      <td className="p-5">{getPessoaNome(pedido.cliente_id)}</td>
       <td>{getBebidaNome(pedido.bebida_id)}</td>
       <td>R${pedido.unitario}</td>
       <td>{pedido.quantidade}</td>
@@ -118,8 +117,12 @@ function ListagemPedido() {
 
   return (
     <ListagemLayout
-      titulo="Listagem de Pedidos" onFilterChange={handleFilterChange}
-      enderecoAdicionar="/cadastro-pedidos" textAdicionar="Cadastrar Novo Pedido">
+      titulo="Listagem de Pedidos" 
+      onFilterChange={handleFilterChange}
+      enderecoAdicionar="/cadastro-pedidos" 
+      textAdicionar="Cadastrar Novo Pedido"
+      botaoRelatorio={<BotaoPedido/>} 
+      >
       {loading ? (
         // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">

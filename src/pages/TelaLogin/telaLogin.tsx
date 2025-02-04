@@ -70,7 +70,7 @@ function TelaLogin() {
                       Usuário
                     </Label>
                     <Input
-                      className="border-laranjajava focus:border-laranjajava"
+                      className="border-laranjajava focus:ring-laranjajava"
                       id="usuario"
                       type="text"
                       placeholder="exemplo.exemplo"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Pie, PieChart } from "recharts";
 import PedidoRelatorioService from "@/services/ClienteRelatorioService";
 import IPedidoRelatorio from "@/interfaces/IPessoaRelatorio";
+import { CircleUserRound } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -83,7 +84,10 @@ export function GraficoPB() {
             pedido.vezesComprou > max.vezesComprou ? pedido : max
           );
 
-          setClienteMaisComprou({ nome: clienteMaisComprou.nome, imagem: clienteMaisComprou.imagem });
+          setClienteMaisComprou({
+            nome: clienteMaisComprou.nome,
+            imagem: clienteMaisComprou.imagem || "",
+          });
         }
       } catch (error) {
         console.error("Erro ao buscar dados do relatório:", error);
@@ -109,7 +113,7 @@ export function GraficoPB() {
       <CardContent className="flex-1 pb-0">
         <div className="flex gap-4 mb-4">
           <Select onValueChange={setMesSelecionado} defaultValue={mesSelecionado}>
-            <SelectTrigger className="w-[150px] border-laranjajava">
+            <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o mês" />
             </SelectTrigger>
             <SelectContent>
@@ -119,7 +123,7 @@ export function GraficoPB() {
             </SelectContent>
           </Select>
           <Select onValueChange={setAnoSelecionado} defaultValue={anoSelecionado}>
-            <SelectTrigger className="w-[100px] border-laranjajava">
+            <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o ano" />
             </SelectTrigger>
             <SelectContent>
@@ -147,7 +151,14 @@ export function GraficoPB() {
         {clienteMaisComprou && (
           <div className="flex flex-col items-center">
           <div className="text-laranjajava font-medium">Cliente que mais comprou: {clienteMaisComprou.nome}</div>
-          <img src={clienteMaisComprou.imagem} alt={clienteMaisComprou.nome} className="w-32 h-32 mt-2 rounded-lg shadow-md" />
+          {clienteMaisComprou.imagem ? (
+          <img 
+          src={clienteMaisComprou.imagem} 
+          alt={clienteMaisComprou.nome} 
+          className="w-32 h-32 mt-2 rounded-lg shadow-md" />
+          ) : (
+              <CircleUserRound className="w-24 h-24 text-azuljava mx-auto" />
+            )}
         </div>
         )}
       </CardFooter>

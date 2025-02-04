@@ -1,62 +1,86 @@
 import { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Path, DefaultValues, FieldValues } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  Path,
+  DefaultValues,
+  FieldValues,
+  Controller,
+} from "react-hook-form";
 import { fileToBase64 } from "@/utils/imageUtils";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import Select from "react-select";
+import { Input } from "@/components/ui/input"
 
 interface Campo {
   id: string;
   label: string;
-  type: "text" | "email" | "password" | "file" | "number" | "checkbox" | "date" | "textarea" | "select" | "float";
+  type:
+    | "text"
+    | "email"
+    | "password"
+    | "file"
+    | "number"
+    | "checkbox"
+    | "date"
+    | "textarea"
+    | "select"
+    | "float";
   options?: { value: string | number; label: string }[];
   placeholder?: string;
   validation?: object;
+  /**
+   * Conteúdo opcional para renderizar logo abaixo do campo (ex: um popover).
+   */
+  children?: React.ReactNode;
 }
 
 interface FormularioProps<T extends FieldValues> {
-  campos: Campo[]
-  onSubmit: SubmitHandler<T>
-  erros?: Record<string, string>
-  valoresIniciais?: DefaultValues<T>
+  campos: Campo[];
+  onSubmit: SubmitHandler<T>;
+  erros?: Record<string, string>;
+  valoresIniciais?: DefaultValues<T>;
 }
 
-const Formulario = <T extends FieldValues>({
+function Formulario<T extends FieldValues>({
   campos,
   onSubmit,
   erros = {},
   valoresIniciais,
-}: FormularioProps<T>) => {
-  const { register, handleSubmit, setValue } = useForm<T>({
+}: FormularioProps<T>) {
+  const { register, handleSubmit, setValue, control } = useForm<T>({
     defaultValues: valoresIniciais as DefaultValues<T>,
   });
 
-  const [mostrarSenha, setMostrarSenha] = useState(false)
-  const [precoFixo, setPrecoFixo] = useState(false)
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null)
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [precoFixo, setPrecoFixo] = useState(false);
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
 
-  // Atualiza os valores dos campos ao carregar
+  // Ao carregar, atualiza os valores iniciais (e a imagem se existir)
   useEffect(() => {
     if (valoresIniciais) {
       Object.keys(valoresIniciais).forEach((key) => {
         setValue(key as Path<T>, valoresIniciais[key]);
       });
 
-      // Exibir imagem inicial, se houver
       if ((valoresIniciais as any).imagem) {
         setImagemPreview((valoresIniciais as any).imagem);
       }
     }
   }, [valoresIniciais, setValue]);
 
-  // Define preço fixo ao marcar checkbox
+  // Exemplo para fixar preço
   useEffect(() => {
     if (precoFixo) {
-      setValue("preco" as Path<T>, 2.30 as any);
+      setValue("preco" as Path<T>, 2.3 as any);
     }
   }, [precoFixo, setValue]);
 
-  // Atualiza a pré-visualização da imagem ao selecionar um arquivo
-  const handleImagemSelecionada = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Ao selecionar arquivo, converte para base64
+  const handleImagemSelecionada = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const base64 = await fileToBase64(file);
@@ -64,7 +88,6 @@ const Formulario = <T extends FieldValues>({
     }
   };
 
-  // Remove a imagem selecionada
   const handleRemoverImagem = () => {
     setImagemPreview(null);
     setValue("imagem" as Path<T>, "" as any);
@@ -74,30 +97,59 @@ const Formulario = <T extends FieldValues>({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {campos.map((campo) => (
         <div key={campo.id}>
-          {/* Label do campo */}
           <label className="formulario-label" htmlFor={campo.id}>
             {campo.label}:
           </label>
 
-          {/* Campo de Select */}
+          {/* Se for SELECT */}
           {campo.type === "select" ? (
-            <select
-              id={campo.id}
-              {...register(campo.id as Path<T>, campo.validation)}
-              defaultValue={valoresIniciais ? valoresIniciais[campo.id] : ""}
-              className="formulario-campo"
-            >
-              {campo.placeholder && (
-                <option value="" disabled>
-                  {campo.placeholder}
-                </option>
-              )}
-              {campo.options?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <>
+              <Controller
+                name={campo.id as Path<T>}
+                control={control}
+                rules={campo.validation}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={campo.options}
+                    placeholder={campo.placeholder || "Selecione..."}
+                    onChange={(option) => field.onChange(option?.value ?? "")}
+                    value={
+                      campo.options?.find(
+                        (o) => o.value === field.value
+                      ) || null
+                    }
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        padding: 2,
+                        borderColor: "#F3931B",
+                        borderWidth: "1px",
+                        borderRadius: "0.5rem",
+                        boxShadow: state.isFocused
+                          ? "0 0 0 1px #F3931B"
+                          : "none",
+                        "&:hover": {
+                          borderColor: "#F3931B",
+                        },
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isSelected
+                          ? "#F3931B"
+                          : state.isFocused
+                          ? "#fed7aa"
+                          : "#FFF",
+                        color: "#000",
+                        cursor: "pointer",
+                      }),
+                    }}
+                  />
+                )}
+              />
+              {/* Se existir children (ex: popover), renderiza abaixo */}
+              {campo.children && <div className="mt-2">{campo.children}</div>}
+            </>
           ) : campo.type === "textarea" ? (
             <textarea
               id={campo.id}
@@ -108,7 +160,6 @@ const Formulario = <T extends FieldValues>({
             />
           ) : campo.type === "float" ? (
             <>
-              {/* Campo de Preço */}
               <input
                 id={campo.id}
                 type="number"
@@ -118,7 +169,6 @@ const Formulario = <T extends FieldValues>({
                 className="formulario-campo"
                 disabled={precoFixo}
               />
-              {/* Checkbox para fixar o preço */}
               <div className="mt-2 flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -134,8 +184,7 @@ const Formulario = <T extends FieldValues>({
             </>
           ) : campo.type === "file" ? (
             <>
-              {/* Input de arquivo */}
-              <input
+              <Input
                 id={campo.id}
                 type="file"
                 accept="image/*"
@@ -143,11 +192,11 @@ const Formulario = <T extends FieldValues>({
                 onChange={handleImagemSelecionada}
                 className="formulario-campo"
               />
-
-              {/* Pré-visualização da imagem */}
               {imagemPreview && (
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  <span className="text-gray-500 text-sm">Pré-visualização da imagem</span>
+                  <span className="text-gray-500 text-sm">
+                    Pré-visualização da imagem
+                  </span>
                   <img
                     src={imagemPreview}
                     alt="Pré-visualização"
@@ -166,9 +215,14 @@ const Formulario = <T extends FieldValues>({
               )}
             </>
           ) : (
+            // Campos de texto, password, etc.
             <input
               id={campo.id}
-              type={campo.type === "password" && mostrarSenha ? "text" : campo.type}
+              type={
+                campo.type === "password" && mostrarSenha
+                  ? "text"
+                  : campo.type
+              }
               {...register(campo.id as Path<T>, campo.validation)}
               placeholder={campo.placeholder}
               className="formulario-campo"
@@ -192,21 +246,23 @@ const Formulario = <T extends FieldValues>({
             </div>
           )}
 
-          {/* Exibe a mensagem de erro abaixo do campo */}
+          {/* Mensagem de erro abaixo do campo */}
           {erros[campo.id] && (
             <p className="text-red-500 text-sm">{erros[campo.id]}</p>
           )}
         </div>
       ))}
       <div className="flex justify-center">
-      <Button className="w-1/2 bg-azuljava text-white py-3 font-medium rounded-lg hover:bg-laranjajava transition duration-300"
-        size="lg"
-        type="submit" >
-        Enviar
-      </Button>
+        <Button
+          className="w-1/2 bg-azuljava text-white py-3 font-medium rounded-lg hover:bg-laranjajava transition duration-300"
+          size="lg"
+          type="submit"
+        >
+          Enviar
+        </Button>
       </div>
     </form>
   );
-};
+}
 
-export default Formulario
+export default Formulario;

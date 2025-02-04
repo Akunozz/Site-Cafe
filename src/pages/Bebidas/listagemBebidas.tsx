@@ -8,10 +8,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Coffee } from "lucide-react";
 
 function ListagemBebidas() {
-  const [bebidas, setBebidas] = useState<IBebida[]>([]);
-  const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [userPermission, setUserPermission] = useState<string | null>(null);
+  const [bebidas, setBebidas] = useState<IBebida[]>([])
+  const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([])
+  const [loading, setLoading] = useState(true)
+  const [userPermission, setUserPermission] = useState<string | null>(null)
 
   // Busca as bebidas e recupera a permissão do usuário
   useEffect(() => {
@@ -61,7 +61,7 @@ function ListagemBebidas() {
   };
 
   // Definição das colunas da tabela
-  const colunas = ["Imagem", "Nome", "Descrição", "Preço", "ID", "Status", "Alterar"];
+  const colunas = ["Imagem", "Nome", "Descrição", "Preço", "Status", "Alterar"];
 
   // Renderiza cada linha da tabela
   const renderLinha = (bebida: IBebida) => (
@@ -81,7 +81,6 @@ function ListagemBebidas() {
       <td>{bebida.nome}</td>
       <td>{bebida.descricao}</td>
       <td>R$ {bebida.preco}</td>
-      <td>{bebida.id}</td>
       <td>
         <span className={`${bebida.status === "Ativo" ? "text-green-500" : "text-red-500"}`}>
           {bebida.status}
@@ -94,7 +93,7 @@ function ListagemBebidas() {
           onExcluir={
             userPermission === "ADMIN"
               ? () => excluirBebida(bebida)
-              : () => alert("Você não tem permissão para excluir esta bebida.")
+              : () =>alert("Você não tem permissão para excluir esta bebida.")
           }
         />
       </td>

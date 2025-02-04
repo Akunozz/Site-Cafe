@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import PedidosRelatorioService from "@/services/PedidosRelatorioService";
-import IPedidoRelatorio from "@/interfaces/IPedidoRelatorio";
+import IPedidoPorMes from "@/interfaces/IPedidoPorMes";
 import {
   Card,
   CardContent,
@@ -22,6 +22,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
 
 // Lista de meses disponíveis para seleção
 const meses = [
@@ -61,7 +62,7 @@ export function GraficoQP() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response: IPedidoRelatorio[] = await PedidosRelatorioService.getListarDados(mesInicial, mesFinal);
+        const response: IPedidoPorMes[] = await PedidosRelatorioService.getListarDados(mesInicial, mesFinal);
 
         if (response.length === 0) {
           setMensagem("Nenhum pedido realizado nesse período.");
@@ -111,7 +112,7 @@ export function GraficoQP() {
         {/* Dropdown de seleção de datas */}
         <div className="flex gap-4 mb-4">
           <Select onValueChange={setMesInicial} defaultValue={mesInicial}>
-            <SelectTrigger className="w-[180px] border-laranjajava">
+            <SelectTrigger className="w-1/3 border-laranjajava">
               <SelectValue placeholder="Mês Inicial" />
             </SelectTrigger>
             <SelectContent>
@@ -121,7 +122,7 @@ export function GraficoQP() {
             </SelectContent>
           </Select>
           <Select onValueChange={setMesFinal} defaultValue={mesFinal}>
-            <SelectTrigger className="w-[180px] border-laranjajava">
+            <SelectTrigger className="w-1/3 border-laranjajava">
               <SelectValue placeholder="Mês Final" />
             </SelectTrigger>
             <SelectContent>

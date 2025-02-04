@@ -7,6 +7,7 @@ import PessoaService from "../../services/PessoaService";
 import { z } from "zod";
 import { pedidosEditarSchema } from "../../schemas/pedidosEditarSchema";
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner";
 
 type Campo<T> = {
     id: keyof T;
@@ -22,8 +23,6 @@ type PedidoForm = z.infer<typeof pedidosEditarSchema>;
 const EditarPedido = () => {
     const urlSegments = window.location.pathname.split("/");
     const id = urlSegments[urlSegments.length - 1];
-    const [mensagem, setMensagem] = useState<string | null>(null);
-    const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
     const [bebidas, setBebidas] = useState<{ id: number; nome: string; preco: number }[]>([]);
     const [clienteNome, setClienteNome] = useState<string | null>(null);
     const [erros, setErros] = useState<Record<string, string>>({});
@@ -63,7 +62,7 @@ const EditarPedido = () => {
                 }
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
-                alert("Erro ao carregar dados.");
+                toast.error("Erro ao carregar dados.");
             }
         }
 
@@ -86,9 +85,7 @@ const EditarPedido = () => {
     // Função de envio do formulário
     const handleSubmit = async (data: any) => {
         try {
-            //limpa os erros do zod e a mensagem
-            setMensagem(null);
-            setMensagemSucesso(null);
+            //limpa os erros do zod
             setErros({});
 
             const validData = pedidosEditarSchema.parse(data);
@@ -106,11 +103,10 @@ const EditarPedido = () => {
 
             const response = await PedidoService.putEditarDados(id!, payload);
             if (response) {
-                setMensagem("Pedido atualizado com sucesso!");
-                setMensagemSucesso(true);
+                toast.success("Pedido atualizado com sucesso!");
             } else {
-                setMensagem("Erro ao atualizar pedido.");
-                setMensagemSucesso(false);
+                toast.error("Erro ao atualizar pedido.");
+                
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
@@ -121,9 +117,7 @@ const EditarPedido = () => {
                 }, {} as Record<string, string>);
                 setErros(errosMap); // Atualiza os erros no estado
             } else {
-                console.error("Erro ao editar pedido:", error);
-                setMensagem("Ocorreu um erro ao salvar os dados.");
-                setMensagemSucesso(false); // Mensagem de erro
+                toast.error("Ocorreu um erro ao salvar os dados.");
             }
         }
     };
@@ -144,15 +138,6 @@ const EditarPedido = () => {
         />
       ) : (
         <Skeleton className="w-[100px] h-[20px] rounded-full" />
-      )}
-      {mensagem && (
-        <div
-          className={`mt-4 p-4 rounded-lg ${
-            mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-          }`}
-        >
-          {mensagem}
-        </div>
       )}
     </PageLayout>
   );

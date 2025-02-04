@@ -9,6 +9,8 @@ import { pessoaSchema } from "../../schemas/pessoaSchema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { toast } from "sonner";
 
 type Campo<T> = {
   id: keyof T;
@@ -16,6 +18,7 @@ type Campo<T> = {
   type: "text" | "password" | "select" | "file";
   placeholder?: string;
   options?: { value: string; label: string }[];
+  children?: React.ReactNode;
 };
 
 // Verificação com Zod
@@ -24,13 +27,12 @@ type PessoaForm = z.infer<typeof pessoaSchema>;
 const EditarCliente = () => {
   const urlSegments = window.location.pathname.split("/");
   const id = urlSegments[urlSegments.length - 1];
-
+  const [novoSetor, setNovoSetor] = useState("");
   const [imagemPreview, setImagemPreview] = useState<string | null>(null);
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [setores, setSetores] = useState<{ id: string; nome: string }[]>([]);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [valoresIniciais, setValoresIniciais] = useState<PessoaForm | null>(null);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   // Carregar setores ao montar o componente
   useEffect(() => {
@@ -82,6 +84,42 @@ const EditarCliente = () => {
     setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev); // Atualiza o estado removendo a imagem
   };
 
+    // Função para cadastrar novo setor no popover
+    const handleCadastrarSetor = async () => {
+      if (!novoSetor.trim()) return;
+  
+      const setorCriado = await SetorService.postAdicionarDados({
+        nome: novoSetor,
+      });
+      if (setorCriado) {
+        // Atualiza a lista de setores
+        setSetores((prev) => [...prev, setorCriado]);
+        setNovoSetor("");
+        setIsPopoverOpen(false);
+        toast.success("Setor cadastrado com sucesso!");
+      }
+    };
+
+    const popoverNovoSetor = (
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger asChild>
+          <Button size="sm" className="p-4 bg-azuljava hover:bg-laranjajava">
+            Cadastrar novo setor
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="p-4 space-y-2">
+          <label className="block text-sm font-medium text-laranjajava">Nome do setor</label>
+          <input
+            type="text"
+            value={novoSetor}
+            onChange={(e) => setNovoSetor(e.target.value)}
+            className="formulario-campo"
+          />
+          <Button className="bg-azuljava hover:bg-laranjajava" onClick={handleCadastrarSetor}>Salvar</Button>
+        </PopoverContent>
+      </Popover>
+    );
+
   // Configuração dos campos do formulário
   const campos: Campo<PessoaForm>[] = [
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da pessoa" },
@@ -94,6 +132,7 @@ const EditarCliente = () => {
         value: setor.id,
         label: setor.nome,
       })),
+      children: popoverNovoSetor,
     },
     { id: "imagem", label: "Imagem", type: "file" },
     { id: "usuario", label: "Usuário", type: "text", placeholder: "Digite o nome de usuário" },
@@ -124,8 +163,6 @@ const EditarCliente = () => {
   // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      setMensagem(null);
-      setMensagemSucesso(null);
       setErros({});
 
       // Valida os dados usando o Zod
@@ -148,11 +185,9 @@ const EditarCliente = () => {
 
       const response = await pessoaService.putEditarDados(id!, payload);
       if (response) {
-        setMensagem("Cliente atualizado com sucesso!");
-        setMensagemSucesso(true);
+        toast.success("Cliente atualizado com sucesso!");
       } else {
-        setMensagem("Erro ao atualizar cliente.");
-        setMensagemSucesso(false);
+        toast.error("Erro ao atualizar cliente.");
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -162,9 +197,7 @@ const EditarCliente = () => {
         }, {} as Record<string, string>);
         setErros(errosMap);
       } else {
-        console.error("Erro ao cadastrar cliente:", error);
-        setMensagem("Ocorreu um erro ao salvar os dados.");
-        setMensagemSucesso(false);
+        toast.error("Ocorreu um erro ao salvar os dados.");
       }
     }
   };
@@ -201,12 +234,6 @@ const EditarCliente = () => {
         />
       ) : (
         <Skeleton className="w-[100px] h-[20px] rounded-full" />
-      )}
-
-      {mensagem && (
-        <div className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-          {mensagem}
-        </div>
       )}
     </PageLayout>
   );

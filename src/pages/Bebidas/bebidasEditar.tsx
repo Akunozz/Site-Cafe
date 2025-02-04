@@ -8,6 +8,7 @@ import { bebidaSchema } from "../../schemas/bebidaSchema";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 type Campo<T> = {
   id: keyof T;
@@ -23,9 +24,6 @@ type BebidaForm = z.infer<typeof bebidaSchema>;
 const EditarBebida = () => {
   const urlSegments = window.location.pathname.split("/");
   const id = urlSegments[urlSegments.length - 1];
-
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [valoresIniciais, setValoresIniciais] = useState<BebidaForm | null>(null);
   const [imagemPreview, setImagemPreview] = useState<string | null>(null);
@@ -88,8 +86,6 @@ const EditarBebida = () => {
   const handleSubmit = async (data: any) => {
     console.log("Dados enviados pelo formulário:", data);
     try {
-      setMensagem(null);
-      setMensagemSucesso(null);
       setErros({});
 
       // Validação com Zod
@@ -113,11 +109,9 @@ const EditarBebida = () => {
       console.log("Dados enviados para API:", response);
 
       if (response) {
-        setMensagem("Bebida atualizada com sucesso!");
-        setMensagemSucesso(true);
+        toast.success("Bebida atualizada com sucesso!");
       } else {
-        setMensagem("Erro ao atualizar bebida.");
-        setMensagemSucesso(false);
+        toast.error("Erro ao atualizar bebida.");
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -129,9 +123,7 @@ const EditarBebida = () => {
         });
         setErros(fieldErrors);
       } else {
-        console.error("Erro ao atualizar bebida:", error);
-        setMensagem("Ocorreu um erro ao salvar os dados.");
-        setMensagemSucesso(false);
+        toast.error("Ocorreu um erro ao salvar os dados.");
       }
     }
   };
@@ -168,12 +160,6 @@ const EditarBebida = () => {
         />
       ) : (
         <Skeleton className="w-[100px] h-[20px] rounded-full" />
-      )}
-
-      {mensagem && (
-        <div className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-          {mensagem}
-        </div>
       )}
     </PageLayout>
   );

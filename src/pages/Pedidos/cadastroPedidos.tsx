@@ -6,6 +6,7 @@ import BebidaService from "../../services/BebidaService";
 import PedidoService from "../../services/PedidoService";
 import { z } from "zod";
 import { pedidosSchema } from "../../schemas/pedidosSchema";
+import { toast } from "sonner";
 
 type Campo<T> = {
   id: keyof T;
@@ -18,8 +19,6 @@ type Campo<T> = {
 type PedidoForm = z.infer<typeof pedidosSchema>;
 
 const CadastroPedido = () => {
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [mensagemSucesso, setMensagemSucesso] = useState<boolean | null>(null);
   const [erros, setErros] = useState<Record<string, string>>({});
   const [clientes, setClientes] = useState<{ id: number, nome: string }[]>([]);
   const [bebidas, setBebidas] = useState<{ id: number, nome: string, preco: number }[]>([]);
@@ -47,8 +46,7 @@ const CadastroPedido = () => {
         );
 
       } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-        alert("Erro ao carregar dados.");
+        toast.error("Erro ao carregar dados.");
       }
     }
     fetchData();
@@ -75,9 +73,7 @@ const CadastroPedido = () => {
   // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      //limpa os erros do zod e a mensagem
-      setMensagem(null);
-      setMensagemSucesso(null);
+      //limpa os erros do zod
       setErros({});
       // Validação com zod
       const validData = pedidosSchema.parse(data);
@@ -97,11 +93,10 @@ const CadastroPedido = () => {
 
       const response = await PedidoService.postAdicionarDados(payload);
       if (response) {
-        setMensagem("Pedido cadastrado com sucesso!");
-        setMensagemSucesso(true);
+        toast.success("Pedido cadastrado com sucesso!");
       } else {
-        setMensagem("Erro ao cadastrar pedido.");
-        setMensagemSucesso(false);
+        toast.error("Erro ao cadastrar pedido.");
+       
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -114,9 +109,7 @@ const CadastroPedido = () => {
         });
         setErros(fieldErrors); // Define erros para exibição no formulário
       } else {
-        console.error("Erro ao cadastar bebida:", error);
-        setMensagem("Ocorreu um erro ao salvar os dados.");
-        setMensagemSucesso(false);
+        toast.error("Ocorreu um erro ao salvar os dados.");
       }
     }
   };
@@ -124,13 +117,6 @@ const CadastroPedido = () => {
   return (
     <PageLayout titulo="Cadastro de Pedidos" rota="/listagem-pedidos" >
       <Formulario campos={campos} onSubmit={(data) => handleSubmit(data)} erros={erros} />
-      {mensagem && (
-        <div
-          className={`mt-4 p-4 rounded-lg ${mensagemSucesso ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-            }`}>
-          {mensagem}
-        </div>
-      )}
     </PageLayout >
   );
 };

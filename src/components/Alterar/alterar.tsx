@@ -1,17 +1,19 @@
+//componente utilizado nas listagens
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 
 interface AlterarProps {
-  onExcluir?: () => void; // Propriedade opcional
-  rotaEdicao: string;
-  idItem: string | number;
+  onExcluir?: () => void;   //botão de excluir
+  rotaEdicao: string;       //rota para editar
+  idItem: string | number;  //id para a rota
 }
 
 const Alterar: React.FC<AlterarProps> = ({ onExcluir, rotaEdicao, idItem }) => {
   return (
     <div className="flex justify-center space-x-2">
-      {/* Botão de Alterar */}
+      
+      {/* Botão de editar */}
       <a href={`${rotaEdicao}/${idItem}`}>
         <Button variant="ghost" size="icon" className="hover:bg-orange-200">
           <Pencil className="text-amber-950" />
@@ -19,7 +21,6 @@ const Alterar: React.FC<AlterarProps> = ({ onExcluir, rotaEdicao, idItem }) => {
       </a>
 
       {/* Botão de Excluir */}
-      
         <a>
           <Button
             variant="ghost"

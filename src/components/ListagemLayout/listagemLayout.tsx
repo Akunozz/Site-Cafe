@@ -6,9 +6,11 @@ import { ClipboardPlus } from "lucide-react";
 interface ListagemLayoutProps {
   titulo: string;                           // h1 da página
   onFilterChange: (text: string) => void;   // função de alterar o filtro
-  children: React.ReactNode;                // children
+  children?: React.ReactNode;                // children
   enderecoAdicionar: string;                // link para cadastro
   textAdicionar: string;                    // texto do botão de cadastro
+  botaoSetor?: React.ReactNode;
+  botaoRelatorio?: React.ReactNode;
 }
 
 const ListagemLayout: React.FC<ListagemLayoutProps> = ({
@@ -17,6 +19,8 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
   children,
   enderecoAdicionar,
   textAdicionar,
+  botaoSetor,
+  botaoRelatorio,
 }) => {
   return (
     <div className="flex bg-preto h-screen">
@@ -29,14 +33,16 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
             <div className="flex items-center w-1/4 mr-auto">
               <Input
                 type="text"
-                placeholder="Digite para filtrar 🔎"
-                className="border-2 border-azuljava focus:bg-gray-50"
+                placeholder="Digite para filtrar pelo nome🔎"
+                className="border-2 border-azuljava focus:ring-azuljava focus:bg-gray-50"
                 onChange={(e) => onFilterChange(e.target.value)}
               />
             </div>
-            
+
             {/* Botão de Adicionar */}
-            <div>
+            <div className="flex gap-4">
+              {botaoRelatorio}
+              {botaoSetor}
               <a href={enderecoAdicionar}>
                 <Button
                   className="bg-azuljava hover:bg-laranjajava transition-all duration-300 p-5 text-base"

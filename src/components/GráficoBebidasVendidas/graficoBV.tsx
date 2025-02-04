@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Pie, PieChart } from "recharts";
 import BebidaRelatorioService from "@/services/BebidaRelatorioService";
 import IBebidaRelatorio from "@/interfaces/IBebidaRelatorio";
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Coffee } from "lucide-react";
 
 import {
   Card,
@@ -40,7 +41,7 @@ export function GraficoBV() {
   const [anoSelecionado, setAnoSelecionado] = useState("2024");
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
-  const [bebidaMaisVendida, setBebidaMaisVendida] = useState<{ nome: string; imagem: string } | null>(null);
+  const [bebidaMaisVendida, setBebidaMaisVendida] = useState<{ nome: string; imagem?: string } | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,9 +53,9 @@ export function GraficoBV() {
         );
 
         if (response.length === 0) {
-          setChartData([])
-          setMensagem("Nenhuma bebida foi vendida neste período.")
-          setBebidaMaisVendida(null)
+          setChartData([]);
+          setMensagem("Nenhuma bebida foi vendida neste período.");
+          setBebidaMaisVendida(null);
         } else {
           const colors = ["#4F46E5", "#EC4899", "#F59E0B", "#10B981", "#8B5CF6", "#ade4b5",
             "#ffabab", "#ffdaab", "#ddffab", "#abe4ff", "#d9abff"];
@@ -71,8 +72,11 @@ export function GraficoBV() {
           const bebidaMaisVendida = response.reduce((max, pedido) =>
             pedido.quantidade > max.quantidade ? pedido : max
           );
-          setBebidaMaisVendida({ nome: bebidaMaisVendida.nome, imagem: bebidaMaisVendida.imagem });
 
+          setBebidaMaisVendida({
+            nome: bebidaMaisVendida.nome,
+            imagem: bebidaMaisVendida.imagem || "",
+          });
         }
       } catch (error) {
         console.error("Erro ao buscar dados do relatório:", error);
@@ -98,7 +102,7 @@ export function GraficoBV() {
       <CardContent className="flex-1 pb-0">
         <div className="flex gap-4 mb-4">
           <Select onValueChange={setMesSelecionado} defaultValue={mesSelecionado}>
-            <SelectTrigger className="w-[150px] border-laranjajava">
+            <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o mês" />
             </SelectTrigger>
             <SelectContent>
@@ -108,7 +112,7 @@ export function GraficoBV() {
             </SelectContent>
           </Select>
           <Select onValueChange={setAnoSelecionado} defaultValue={anoSelecionado}>
-            <SelectTrigger className="w-[100px] border-laranjajava">
+            <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o ano" />
             </SelectTrigger>
             <SelectContent>
@@ -133,10 +137,18 @@ export function GraficoBV() {
         )}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-      {bebidaMaisVendida && (
+        {bebidaMaisVendida && (
           <div className="flex flex-col items-center">
             <div className="text-laranjajava font-medium">Bebida mais vendida: {bebidaMaisVendida.nome}</div>
-            <img src={bebidaMaisVendida.imagem} alt={bebidaMaisVendida.nome} className="w-32 h-32 mt-2 rounded-lg shadow-md" />
+            {bebidaMaisVendida.imagem ? (
+              <img
+                src={bebidaMaisVendida.imagem}
+                alt={bebidaMaisVendida.nome}
+                className="w-32 h-32 mt-2 rounded-lg shadow-md"
+              />
+            ) : (
+              <Coffee className="w-24 h-24 text-azuljava mx-auto" />
+            )}
           </div>
         )}
       </CardFooter>

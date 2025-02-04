@@ -5,7 +5,6 @@ class SetorService extends ApiService<ISetor> {
     constructor() {
         super("setores")
     }
-
 }
 
 export default new SetorService();
