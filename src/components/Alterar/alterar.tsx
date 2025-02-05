@@ -1,13 +1,13 @@
 //componente utilizado nas listagens
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Pencil, Trash2 } from "lucide-react"
 
 interface AlterarProps {
-  onExcluir?: () => void;   //botão de excluir
-  rotaEdicao: string;       //rota para editar
-  idItem: string | number;  //id para a rota
-}
+  onExcluir?: () => void   //botão de excluir
+  rotaEdicao: string       //rota para editar
+  idItem: string | number  //id para a rota
+};
 
 const Alterar: React.FC<AlterarProps> = ({ onExcluir, rotaEdicao, idItem }) => {
   return (
@@ -36,4 +36,4 @@ const Alterar: React.FC<AlterarProps> = ({ onExcluir, rotaEdicao, idItem }) => {
   );
 };
 
-export default Alterar;
+export default Alterar

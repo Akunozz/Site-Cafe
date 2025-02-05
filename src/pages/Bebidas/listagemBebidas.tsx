@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../components/Tabela/tabela";
-import BebidaService from "../../services/BebidaService";
-import IBebida from "../../interfaces/IBebida";
-import Alterar from "../../components/Alterar/alterar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Coffee } from "lucide-react";
+import { useEffect, useState } from "react"
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout"
+import Tabela from "../../components/Tabela/tabela"
+import BebidaService from "../../services/BebidaService"
+import IBebida from "../../interfaces/IBebida"
+import Alterar from "../../components/Alterar/alterar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Coffee } from "lucide-react"
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([])
@@ -13,7 +13,7 @@ function ListagemBebidas() {
   const [loading, setLoading] = useState(true)
   const [userPermission, setUserPermission] = useState<string | null>(null)
 
-  // Busca as bebidas e recupera a permissão do usuário
+  // busca bebidas
   useEffect(() => {
     async function fetchBebidas() {
       try {
@@ -32,7 +32,6 @@ function ListagemBebidas() {
     setUserPermission(perm);
   }, []);
 
-  // Função para excluir uma bebida
   const excluirBebida = async (bebida: IBebida) => {
     if (window.confirm("Tem certeza que deseja excluir esta bebida?")) {
       try {
@@ -51,7 +50,6 @@ function ListagemBebidas() {
     }
   };
 
-  // Atualiza a lista filtrada conforme o filtro
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = bebidas.filter((bebida) =>
@@ -60,11 +58,9 @@ function ListagemBebidas() {
     setBebidasFiltradas(resultadosFiltrados);
   };
 
-  // Definição das colunas da tabela
   const colunas = ["Imagem", "Nome", "Descrição", "Preço", "Status", "Alterar"];
 
-  // Renderiza cada linha da tabela
-  const renderLinha = (bebida: IBebida) => (
+  const itensTabela = (bebida: IBebida) => (
     <>
       <td>
         {bebida.imagem ? (
@@ -91,7 +87,7 @@ function ListagemBebidas() {
           rotaEdicao="/bebidas"
           idItem={bebida.id}
           onExcluir={
-            userPermission === "ADMIN"
+            userPermission === "ADMIN" || userPermission === "AUX"
               ? () => excluirBebida(bebida)
               : () =>alert("Você não tem permissão para excluir esta bebida.")
           }
@@ -114,10 +110,10 @@ function ListagemBebidas() {
           ))}
         </div>
       ) : (
-        <Tabela colunas={colunas} dados={bebidasFiltradas} renderLinha={renderLinha} />
+        <Tabela colunas={colunas} dados={bebidasFiltradas} itensTabela={itensTabela} />
       )}
     </ListagemLayout>
   );
 }
 
-export default ListagemBebidas;
+export default ListagemBebidas

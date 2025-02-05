@@ -1,31 +1,31 @@
-//componente utilizado na listagem de relatorio para gerar um relaorio de pedidos filtrados por mes
-import { Button } from "@/components/ui/button";
-import { ClipboardPlus, Download } from "lucide-react";
+//componente utilizado na listagem de pedidos para gerar um relaorio de pedidos filtrados por mes
+import { Button } from "@/components/ui/button"
+import { ClipboardPlus, Download } from "lucide-react"
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
-import PedidosRelatorioService from "@/services/PedidosRelatorioService";
-import IPedidoRelatorio from "@/interfaces/IPedidoRelatorio";
-import Tabela from "../Tabela/tabela";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/components/ui/dialog"
+import { useState, useEffect } from "react"
+import PedidosRelatorioService from "@/services/PedidosRelatorioService"
+import IPedidoRelatorio from "@/interfaces/IPedidoRelatorio"
+import Tabela from "../Tabela/tabela"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
 function BotaoPedido() {
-  const [pedidos, setPedidos] = useState<IPedidoRelatorio[]>([]); //estado que contem os pedidos de acordo com o filtro
+  const [pedidos, setPedidos] = useState<IPedidoRelatorio[]>([]); //contem os pedidos de acordo com o filtro
   const [loading, setLoading] = useState(true); //tela carregamento
-  const [mesSelecionado, setMesSelecionado] = useState("1"); //estado dos meses
-  const [anoSelecionado, setAnoSelecionado] = useState("2024"); //estado dos anos
+  const [mesSelecionado, setMesSelecionado] = useState("1"); // meses do filtro
+  const [anoSelecionado, setAnoSelecionado] = useState("2024"); // anos do filtro
 
   const meses = [
     { value: "1", label: "Janeiro" }, { value: "2", label: "Fevereiro" }, { value: "3", label: "Março" },
@@ -76,7 +76,7 @@ function BotaoPedido() {
   //colunas da tabela
   const colunas = ["Período", "Cliente", "Quantidade", "Valor Total"];
   //itens da tabela
-  const renderLinha = (pedido: IPedidoRelatorio) => (
+  const itensTabela = (pedido: IPedidoRelatorio) => (
     <>
       <td className="p-2">{pedido.mesAno}</td>
       <td>{pedido.cliente}</td>
@@ -127,7 +127,7 @@ function BotaoPedido() {
               ))}
             </div>
           ) : pedidos.length > 0 ? (
-            <Tabela colunas={colunas} dados={pedidos} renderLinha={renderLinha} />
+            <Tabela colunas={colunas} dados={pedidos} itensTabela={itensTabela} />
           ) : (
             <p className="text-center text-gray-500">Nenhum pedido encontrado para este período.</p>
           )}
@@ -146,4 +146,4 @@ function BotaoPedido() {
   );
 }
 
-export default BotaoPedido;
+export default BotaoPedido

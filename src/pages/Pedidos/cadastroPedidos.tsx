@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
-import PessoaService from "../../services/PessoaService";
-import BebidaService from "../../services/BebidaService";
-import PedidoService from "../../services/PedidoService";
-import { z } from "zod";
-import { pedidosSchema } from "../../schemas/pedidosSchema";
-import { toast } from "sonner";
+import { useState, useEffect } from "react"
+import Formulario from "../../components/FormularioLayout/formularioLayout"
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout"
+import PessoaService from "../../services/PessoaService"
+import BebidaService from "../../services/BebidaService"
+import PedidoService from "../../services/PedidoService"
+import { z } from "zod"
+import { pedidosSchema } from "../../schemas/pedidosSchema"
+import { toast } from "sonner"
 
 type Campo<T> = {
   id: keyof T;
@@ -24,11 +24,11 @@ const CadastroPedido = () => {
   const [bebidas, setBebidas] = useState<{ id: number, nome: string, preco: number }[]>([]);
   const dataAtual = new Date().toISOString().split("T")[0];
 
-  // Carregar dados ao montar o componente
+  // busca os dados
   useEffect(() => {
     async function fetchData() {
       try {
-        //busca os cliente
+
         const clienteResponse = await PessoaService.getListarDados();
         setClientes(
           clienteResponse.map((cliente) => ({
@@ -36,7 +36,7 @@ const CadastroPedido = () => {
             id: Number(cliente.id),
           }))
         );
-        // Buscar dados das bebidas
+
         const bebidasResponse = await BebidaService.getListarDados();
         setBebidas(
           bebidasResponse.map((bebida) => ({
@@ -70,17 +70,13 @@ const CadastroPedido = () => {
     { id: "quantidade", label: "Quantidade", type: "number", placeholder: "Digite a quantidade" },
   ];
 
-  // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
-      //limpa os erros do zod
       setErros({});
-      // Validação com zod
       const validData = pedidosSchema.parse(data);
 
       const bebidaSelecionada = bebidas.find((bebida) => bebida.id === Number(data.bebida_id));
       const unitario = bebidaSelecionada?.preco || 0;
-      // Calcule o total
       const total = unitario * data.quantidade;
       const payload = {
         ...validData,
@@ -100,14 +96,13 @@ const CadastroPedido = () => {
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        // Mapear os erros do zod
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           if (err.path[0]) {
             fieldErrors[err.path[0]] = err.message;
           }
         });
-        setErros(fieldErrors); // Define erros para exibição no formulário
+        setErros(fieldErrors);
       } else {
         toast.error("Ocorreu um erro ao salvar os dados.");
       }
@@ -121,4 +116,4 @@ const CadastroPedido = () => {
   );
 };
 
-export default CadastroPedido;
+export default CadastroPedido

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { fileToBase64 } from "../../utils/imageUtils";
-import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
-import { z } from "zod";
-import bebidaService from "../../services/BebidaService";
-import { bebidaSchema } from "../../schemas/bebidaSchema";
-import { toast } from "sonner";
+import { useState } from "react"
+import { fileToBase64 } from "../../utils/imageUtils"
+import Formulario from "../../components/FormularioLayout/formularioLayout"
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout"
+import { z } from "zod"
+import bebidaService from "../../services/BebidaService"
+import { bebidaSchema } from "../../schemas/bebidaSchema"
+import { toast } from "sonner"
 
 type Campo<T> = {
   id: keyof T;
@@ -37,10 +37,9 @@ const CadastroBebidas = () => {
 
   const handleSubmit = async (data: any) => {
     try {
-      //limpa os erros do zod
       setErros({});
-      // Validação com zod
       const validData = bebidaSchema.parse(data);
+
       let base64Image = "";
       if (validData.imagem) {
         const fileInput = (document.getElementById("imagem") as HTMLInputElement).files?.[0];
@@ -67,7 +66,6 @@ const CadastroBebidas = () => {
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        // Mapear os erros do zod
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           if (err.path[0]) {
@@ -88,4 +86,4 @@ const CadastroBebidas = () => {
   );
 }
 
-export default CadastroBebidas;
+export default CadastroBebidas

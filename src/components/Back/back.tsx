@@ -1,8 +1,8 @@
 //componente utilzado nas telas de cadastro
-import { CircleArrowLeft } from "lucide-react";
+import { CircleArrowLeft } from "lucide-react"
 
 interface BackProps {
-  rota: string; // link para voltar para listagem
+  rota: string // link para voltar para listagem
 }
 
 const Back: React.FC<BackProps> = ({ rota }) => {
@@ -14,6 +14,6 @@ const Back: React.FC<BackProps> = ({ rota }) => {
       className="text-azuljava hover:size-10" />
       </a>
   );
-};
+}
 
-export default Back;
+export default Back

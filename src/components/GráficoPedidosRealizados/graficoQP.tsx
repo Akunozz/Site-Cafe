@@ -1,64 +1,50 @@
-import { useEffect, useState } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import PedidosRelatorioService from "@/services/PedidosRelatorioService";
-import IPedidoPorMes from "@/interfaces/IPedidoPorMes";
+//gráfico pedidos realizados por período utilizado na tela inicial
+import { useEffect, useState } from "react"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import PedidosRelatorioService from "@/services/PedidosRelatorioService"
+import IPedidoPorMes from "@/interfaces/IPedidoPorMes"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/components/ui/chart"
 
 
 // Lista de meses disponíveis para seleção
 const meses = [
-  { value: "2024-01", label: "Janeiro 2024" },
-  { value: "2024-02", label: "Fevereiro 2024" },
-  { value: "2024-03", label: "Março 2024" },
-  { value: "2024-04", label: "Abril 2024" },
-  { value: "2024-05", label: "Maio 2024" },
-  { value: "2024-06", label: "Junho 2024" },
-  { value: "2024-07", label: "Julho 2024" },
-  { value: "2024-08", label: "Agosto 2024" },
-  { value: "2024-09", label: "Setembro 2024" },
-  { value: "2024-10", label: "Outubro 2024" },
-  { value: "2024-11", label: "Novembro 2024" },
-  { value: "2024-12", label: "Dezembro 2024" },
-  { value: "2025-01", label: "Janeiro 2025" },
-  { value: "2025-02", label: "Fevereiro 2025" },
-  { value: "2025-03", label: "Março 2025" },
-  { value: "2025-04", label: "Abril 2025" },
-  { value: "2025-05", label: "Maio 2025" },
-  { value: "2025-06", label: "Junho 2025" },
-  { value: "2025-07", label: "Julho 2025" },
-  { value: "2025-08", label: "Agosto 2025" },
-  { value: "2025-09", label: "Setembro 2025" },
-  { value: "2025-10", label: "Outubro 2025" },
-  { value: "2025-11", label: "Novembro 2025" },
-  { value: "2025-12", label: "Dezembro 2025" },
+  { value: "2024-01", label: "Janeiro 2024" }, { value: "2024-02", label: "Fevereiro 2024" }, { value: "2024-03", label: "Março 2024" },
+  { value: "2024-04", label: "Abril 2024" }, { value: "2024-05", label: "Maio 2024" }, { value: "2024-06", label: "Junho 2024" },
+  { value: "2024-07", label: "Julho 2024" }, { value: "2024-08", label: "Agosto 2024" }, { value: "2024-09", label: "Setembro 2024" },
+  { value: "2024-10", label: "Outubro 2024" }, { value: "2024-11", label: "Novembro 2024" }, { value: "2024-12", label: "Dezembro 2024" },
+  { value: "2025-01", label: "Janeiro 2025" }, { value: "2025-02", label: "Fevereiro 2025" }, { value: "2025-03", label: "Março 2025" },
+  { value: "2025-04", label: "Abril 2025" }, { value: "2025-05", label: "Maio 2025" }, { value: "2025-06", label: "Junho 2025" },
+  { value: "2025-07", label: "Julho 2025" }, { value: "2025-08", label: "Agosto 2025" }, { value: "2025-09", label: "Setembro 2025" },
+  { value: "2025-10", label: "Outubro 2025" }, { value: "2025-11", label: "Novembro 2025" }, { value: "2025-12", label: "Dezembro 2025" },
 ];
 
 export function GraficoQP() {
-  const [chartData, setChartData] = useState<{ anoMes: string; totalVendas: number; fill: string }[]>([]);
-  const [mesInicial, setMesInicial] = useState("2024-01");
-  const [mesFinal, setMesFinal] = useState("2025-02");
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [mesAnoMaisPedidos, setMesAnoMaisPedidos] = useState<string | null>(null); // Novo estado
+  const [chartData, setChartData] = useState<{ anoMes: string; totalVendas: number; fill: string }[]>([]);  // armazena os dados no gráfico
+  const [mesInicial, setMesInicial] = useState("2024-01");  //mes para filtro
+  const [mesFinal, setMesFinal] = useState("2025-02");  //ano para filtro
+  const [mensagem, setMensagem] = useState<string | null>(null);  //mensagem se não tiver dados
+  const [mesAnoMaisPedidos, setMesAnoMaisPedidos] = useState<string | null>(null); // armazena período com mais pedidos
 
+  //busca dados do relatório
   useEffect(() => {
     async function fetchData() {
       try {
@@ -67,7 +53,7 @@ export function GraficoQP() {
         if (response.length === 0) {
           setMensagem("Nenhum pedido realizado nesse período.");
           setChartData([]);
-          setMesAnoMaisPedidos(null); // Resetar quando não houver dados
+          setMesAnoMaisPedidos(null);
           return;
         }
 
@@ -97,6 +83,7 @@ export function GraficoQP() {
     fetchData();
   }, [mesInicial, mesFinal]);
 
+  //definição do gráfico
   const chartConfig = {
     totalVendas: {
       label: "Total de Pedidos",
@@ -132,8 +119,6 @@ export function GraficoQP() {
             </SelectContent>
           </Select>
         </div>
-
-        {/* Mostra mensagem caso não tenha pedidos */}
         {mensagem ? (
           <p className="text-center text-gray-500">{mensagem}</p>
         ) : (

@@ -1,56 +1,52 @@
-import { useEffect, useState } from "react";
-import { Pie, PieChart } from "recharts";
-import BebidaRelatorioService from "@/services/BebidaRelatorioService";
-import IBebidaRelatorio from "@/interfaces/IBebidaRelatorio";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Coffee } from "lucide-react";
-
+//gráfico bebidas mais vendidas por período utilizado na tela inicial
+import { useEffect, useState } from "react"
+import { Pie, PieChart } from "recharts"
+import BebidaRelatorioService from "@/services/BebidaRelatorioService"
+import IBebidaRelatorio from "@/interfaces/IBebidaRelatorio"
+import { Coffee } from "lucide-react"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/components/ui/chart"
 
 const meses = [
   { value: "1", label: "Janeiro" }, { value: "2", label: "Fevereiro" }, { value: "3", label: "Março" },
   { value: "4", label: "Abril" }, { value: "5", label: "Maio" }, { value: "6", label: "Junho" },
   { value: "7", label: "Julho" }, { value: "8", label: "Agosto" }, { value: "9", label: "Setembro" },
   { value: "10", label: "Outubro" }, { value: "11", label: "Novembro" }, { value: "12", label: "Dezembro" },
-];
-
-const anos = ["2024", "2025"];
+];const anos = ["2024", "2025"];
 
 export function GraficoBV() {
-  const [chartData, setChartData] = useState<{ nome: string; vezesComprada: number; fill: string }[]>([]);
-  const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2024");
-  const [loading, setLoading] = useState(false);
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [bebidaMaisVendida, setBebidaMaisVendida] = useState<{ nome: string; imagem?: string } | null>(null);
+  const [chartData, setChartData] = useState<{ nome: string; vezesComprada: number; fill: string }[]>([]); // armazena os dados no gráfico
+  const [mesSelecionado, setMesSelecionado] = useState("1"); //mes para filtro
+  const [anoSelecionado, setAnoSelecionado] = useState("2024"); //ano para filtro
+  const [mensagem, setMensagem] = useState<string | null>(null); //mensagem se não tiver dados
+  const [bebidaMaisVendida, setBebidaMaisVendida] = useState<{ nome: string; imagem?: string } | null>(null); //armazena bebida mais vendida
 
+  //busca dados do relatório
   useEffect(() => {
     async function fetchData() {
-      setLoading(true);
       try {
         const response: IBebidaRelatorio[] = await BebidaRelatorioService.getListarDados(
           Number(mesSelecionado),
           Number(anoSelecionado)
-        );
+        )
 
         if (response.length === 0) {
           setChartData([]);
@@ -81,13 +77,12 @@ export function GraficoBV() {
       } catch (error) {
         console.error("Erro ao buscar dados do relatório:", error);
         setMensagem("Erro ao carregar os dados.");
-      } finally {
-        setLoading(false);
       }
     }
     fetchData();
   }, [mesSelecionado, anoSelecionado]);
 
+  //definição do gráfico
   const chartConfig = {
     vezesComprada: {
       label: "Quantidade de bebidas vendidas",
@@ -122,10 +117,7 @@ export function GraficoBV() {
             </SelectContent>
           </Select>
         </div>
-
-        {loading ? (
-          <Skeleton className="w-[100px] h-[20px] rounded-full" />
-        ) : mensagem ? (
+        { mensagem ? (
           <p className="text-center text-gray-500">{mensagem}</p>
         ) : (
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">

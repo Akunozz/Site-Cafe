@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { fileToBase64 } from "../../utils/imageUtils";
-import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
-import { z } from "zod";
-import pessoaService from "../../services/PessoaService";
-import SetorService from "../../services/SetorService";
-import { pessoaSchema } from "../../schemas/pessoaSchema";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { toast } from "sonner";
+import { useState, useEffect } from "react"
+import { fileToBase64 } from "../../utils/imageUtils"
+import Formulario from "../../components/FormularioLayout/formularioLayout"
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout"
+import { z } from "zod"
+import pessoaService from "../../services/PessoaService"
+import SetorService from "../../services/SetorService"
+import { pessoaSchema } from "../../schemas/pessoaSchema"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { toast } from "sonner"
 
 type Campo<T> = {
   id: keyof T;
@@ -21,7 +21,6 @@ type Campo<T> = {
   children?: React.ReactNode;
 };
 
-// Verificação com Zod
 type PessoaForm = z.infer<typeof pessoaSchema>;
 
 const EditarCliente = () => {
@@ -34,7 +33,7 @@ const EditarCliente = () => {
   const [valoresIniciais, setValoresIniciais] = useState<PessoaForm | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  // Carregar setores ao montar o componente
+  //busca setores
   useEffect(() => {
     async function fetchSetores() {
       try {
@@ -47,7 +46,7 @@ const EditarCliente = () => {
     fetchSetores();
   }, []);
 
-  // Buscar os dados do cliente pelo ID
+  // busca cliente
   useEffect(() => {
     async function fetchData() {
       try {
@@ -78,49 +77,44 @@ const EditarCliente = () => {
     }
   }, [id]);
 
-  // Função para excluir a imagem
   const handleExcluirImagem = () => {
-    setImagemPreview(null); // Remove a pré-visualização
-    setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev); // Atualiza o estado removendo a imagem
+    setImagemPreview(null);
+    setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev);
   };
 
-    // Função para cadastrar novo setor no popover
-    const handleCadastrarSetor = async () => {
-      if (!novoSetor.trim()) return;
-  
-      const setorCriado = await SetorService.postAdicionarDados({
-        nome: novoSetor,
-      });
-      if (setorCriado) {
-        // Atualiza a lista de setores
-        setSetores((prev) => [...prev, setorCriado]);
-        setNovoSetor("");
-        setIsPopoverOpen(false);
-        toast.success("Setor cadastrado com sucesso!");
-      }
-    };
+  const handleCadastrarSetor = async () => {
+    if (!novoSetor.trim()) return;
+    const setorCriado = await SetorService.postAdicionarDados({
+      nome: novoSetor,
+    });
+    if (setorCriado) {
+      setSetores((prev) => [...prev, setorCriado]);
+      setNovoSetor("");
+      setIsPopoverOpen(false);
+      toast.success("Setor cadastrado com sucesso!");
+    }
+  };
 
-    const popoverNovoSetor = (
-      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-        <PopoverTrigger asChild>
-          <Button size="sm" className="p-4 bg-azuljava hover:bg-laranjajava">
-            Cadastrar novo setor
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="p-4 space-y-2">
-          <label className="block text-sm font-medium text-laranjajava">Nome do setor</label>
-          <input
-            type="text"
-            value={novoSetor}
-            onChange={(e) => setNovoSetor(e.target.value)}
-            className="formulario-campo"
-          />
-          <Button className="bg-azuljava hover:bg-laranjajava" onClick={handleCadastrarSetor}>Salvar</Button>
-        </PopoverContent>
-      </Popover>
-    );
+  const popoverNovoSetor = (
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+      <PopoverTrigger asChild>
+        <Button size="sm" className="p-4 bg-azuljava hover:bg-laranjajava">
+          Cadastrar novo setor
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-4 space-y-2">
+        <label className="block text-sm font-medium text-laranjajava">Nome do setor</label>
+        <input
+          type="text"
+          value={novoSetor}
+          onChange={(e) => setNovoSetor(e.target.value)}
+          className="formulario-campo"
+        />
+        <Button className="bg-azuljava hover:bg-laranjajava" onClick={handleCadastrarSetor}>Salvar</Button>
+      </PopoverContent>
+    </Popover>
+  );
 
-  // Configuração dos campos do formulário
   const campos: Campo<PessoaForm>[] = [
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da pessoa" },
     {
@@ -160,12 +154,9 @@ const EditarCliente = () => {
     }
   ];
 
-  // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     try {
       setErros({});
-
-      // Valida os dados usando o Zod
       const validData = pessoaSchema.parse(data);
 
       let base64Image = imagemPreview || "";
@@ -204,7 +195,6 @@ const EditarCliente = () => {
 
   return (
     <PageLayout titulo="Editar Cliente" rota="/listagem-clientes">
-      {/* Visualização da imagem atual */}
       {imagemPreview && (
         <div className="mt-4 flex flex-col justify-center items-center gap-2">
           <img
@@ -239,4 +229,4 @@ const EditarCliente = () => {
   );
 };
 
-export default EditarCliente;
+export default EditarCliente

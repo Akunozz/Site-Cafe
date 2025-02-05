@@ -1,3 +1,4 @@
+//layout de página para telas de cadastros
 import React from "react"
 import NavBar from "../NavBar/navbar"
 import Back from "../Back/back"

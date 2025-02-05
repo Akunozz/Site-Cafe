@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../components/Tabela/tabela";
-import pessoaService from "../../services/PessoaService";
-import IPessoa from "../../interfaces/IPessoa";
-import Alterar from "../../components/Alterar/alterar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { CircleUserRound } from "lucide-react";
-import BotaoSetores from "@/components/BotaoSetores/botaoSetores";
+import { useEffect, useState } from "react"
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout"
+import Tabela from "../../components/Tabela/tabela"
+import pessoaService from "../../services/PessoaService"
+import IPessoa from "../../interfaces/IPessoa"
+import Alterar from "../../components/Alterar/alterar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { CircleUserRound } from "lucide-react"
+import BotaoSetores from "@/components/BotaoSetores/botaoSetores"
 
 function ListagemClientes() {
   const [clientes, setClientes] = useState<IPessoa[]>([]);
@@ -14,7 +14,7 @@ function ListagemClientes() {
   const [loading, setLoading] = useState(true);
   const [userPermission, setUserPermission] = useState<string | null>(null);
 
-  // Busca os clientes e recupera a permissão do usuário
+  // busca clientes
   useEffect(() => {
     async function fetchClientes() {
       try {
@@ -24,7 +24,7 @@ function ListagemClientes() {
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       } finally {
-        setLoading(false); // Finaliza o carregamento após buscar os dados
+        setLoading(false);
       }
     }
     fetchClientes();
@@ -33,13 +33,11 @@ function ListagemClientes() {
     setUserPermission(perm);
   }, []);
 
-  // Excluir um cliente
   const excluirCliente = async (cliente: IPessoa) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
         const clienteDeletado = await pessoaService.deleteDados(cliente.id);
         if (clienteDeletado) {
-          // Atualiza os estados após a exclusão
           const clientesAtualizados = clientes.filter(
             (c) => c.id !== cliente.id
           );
@@ -55,7 +53,6 @@ function ListagemClientes() {
     }
   };
 
-  // Atualiza a lista filtrada
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = clientes.filter((cliente) =>
@@ -64,9 +61,8 @@ function ListagemClientes() {
     setClientesFiltrados(resultadosFiltrados);
   };
 
-  // Campos da listagem
   const colunas = ["Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"];
-  const renderLinha = (cliente: IPessoa) => (
+  const itensTabela = (cliente: IPessoa) => (
     <>
       <td className="text-center p-2">
         {cliente.imagem ? (
@@ -85,9 +81,8 @@ function ListagemClientes() {
       <td>{cliente.permissao}</td>
       <td>
         <span
-          className={`${
-            cliente.status === "Ativo" ? "text-green-500" : "text-red-500"
-          }`}
+          className={`${cliente.status === "Ativo" ? "text-green-500" : "text-red-500"
+            }`}
         >
           {cliente.status}
         </span>
@@ -112,21 +107,19 @@ function ListagemClientes() {
       onFilterChange={handleFilterChange}
       textAdicionar="Cadastrar Novo Cliente"
       enderecoAdicionar="/cadastro-cliente"
-      botaoSetor={<BotaoSetores/>}
-      >
+      botaoSetor={<BotaoSetores />}
+    >
       {loading ? (
-        // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">
           {[...Array(13)].map((_, index) => (
             <Skeleton key={index} className="w-full h-[40px] rounded-md" />
           ))}
         </div>
       ) : (
-        // Mostra a tabela quando os dados forem carregados
-        <Tabela colunas={colunas} dados={clientesFiltrados} renderLinha={renderLinha} />
+        <Tabela colunas={colunas} dados={clientesFiltrados} itensTabela={itensTabela} />
       )}
     </ListagemLayout>
   );
 }
 
-export default ListagemClientes;
+export default ListagemClientes

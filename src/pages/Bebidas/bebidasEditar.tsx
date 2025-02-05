@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { fileToBase64 } from "../../utils/imageUtils";
-import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
-import { z } from "zod";
-import BebidaService from "../../services/BebidaService";
-import { bebidaSchema } from "../../schemas/bebidaSchema";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react"
+import { fileToBase64 } from "../../utils/imageUtils"
+import Formulario from "../../components/FormularioLayout/formularioLayout"
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout"
+import { z } from "zod"
+import BebidaService from "../../services/BebidaService"
+import { bebidaSchema } from "../../schemas/bebidaSchema"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 
 type Campo<T> = {
   id: keyof T;
@@ -28,7 +28,7 @@ const EditarBebida = () => {
   const [valoresIniciais, setValoresIniciais] = useState<BebidaForm | null>(null);
   const [imagemPreview, setImagemPreview] = useState<string | null>(null);
 
-  // Buscar os dados da bebida pelo ID
+  // busca bebida
   useEffect(() => {
     async function fetchData() {
       try {
@@ -41,8 +41,6 @@ const EditarBebida = () => {
             imagem: "",
             status: response.status,
           });
-
-          // Se a bebida já tiver uma imagem, exibir a pré-visualização
           if (response.imagem) {
             setImagemPreview(response.imagem);
           }
@@ -58,13 +56,12 @@ const EditarBebida = () => {
     }
   }, [id]);
 
-  // Função para excluir a imagem
   const handleExcluirImagem = () => {
-    setImagemPreview(null); // Remove a pré-visualização
-    setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev); // Atualiza o estado removendo a imagem
+    setImagemPreview(null);
+    setValoresIniciais((prev) => prev ? { ...prev, imagem: "" } : prev);
   };
 
-  // Configuração dos campos do formulário
+  // campos
   const campos: Campo<BebidaForm>[] = [
     { id: "nome", label: "Nome", type: "text", placeholder: "Digite o nome da bebida" },
     { id: "preco", label: "Preço", type: "float", placeholder: "Digite o preço da bebida" },
@@ -82,13 +79,10 @@ const EditarBebida = () => {
     },
   ];
 
-  // Função de envio do formulário
   const handleSubmit = async (data: any) => {
     console.log("Dados enviados pelo formulário:", data);
     try {
       setErros({});
-
-      // Validação com Zod
       const validData = bebidaSchema.parse({ ...data });
 
       let base64Image = imagemPreview || "";
@@ -130,7 +124,6 @@ const EditarBebida = () => {
 
   return (
     <PageLayout titulo="Editar Bebida" rota="/listagem-bebidas">
-      {/* Pré-visualização da imagem selecionada */}
       {imagemPreview && (
         <div className="mt-4 flex flex-col justify-center items-center gap-2">
           <img

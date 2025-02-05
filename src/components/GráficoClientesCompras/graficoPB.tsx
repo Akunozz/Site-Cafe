@@ -1,59 +1,47 @@
-import { useEffect, useState } from "react";
-import { Pie, PieChart } from "recharts";
-import PedidoRelatorioService from "@/services/ClienteRelatorioService";
-import IPedidoRelatorio from "@/interfaces/IPessoaRelatorio";
-import { CircleUserRound } from "lucide-react";
+//gráfico clientes que mais compraram por período utilizado na tela inicial
+import { useEffect, useState } from "react"
+import { Pie, PieChart } from "recharts"
+import PedidoRelatorioService from "@/services/ClienteRelatorioService"
+import IPedidoRelatorio from "@/interfaces/IPessoaRelatorio"
+import { CircleUserRound } from "lucide-react"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/components/ui/chart"
 
 const meses = [
-  { value: "1", label: "Janeiro" },
-  { value: "2", label: "Fevereiro" },
-  { value: "3", label: "Março" },
-  { value: "4", label: "Abril" },
-  { value: "5", label: "Maio" },
-  { value: "6", label: "Junho" },
-  { value: "7", label: "Julho" },
-  { value: "8", label: "Agosto" },
-  { value: "9", label: "Setembro" },
-  { value: "10", label: "Outubro" },
-  { value: "11", label: "Novembro" },
-  { value: "12", label: "Dezembro" },
-];
-
-const anos = ["2024", "2025"];
+  { value: "1", label: "Janeiro" }, { value: "2", label: "Fevereiro" }, { value: "3", label: "Março" },
+  { value: "4", label: "Abril" }, { value: "5", label: "Maio" }, { value: "6", label: "Junho" },
+  { value: "7", label: "Julho" }, { value: "8", label: "Agosto" }, { value: "9", label: "Setembro" },
+  { value: "10", label: "Outubro" }, { value: "11", label: "Novembro" }, { value: "12", label: "Dezembro" },
+];const anos = ["2024", "2025"];
 
 export function GraficoPB() {
-  const [chartData, setChartData] = useState<
-    { nome: string; vezesComprou: number; fill: string }[]
-  >([]);
-  const [mesSelecionado, setMesSelecionado] = useState("1");
-  const [anoSelecionado, setAnoSelecionado] = useState("2024");
-  const [loading, setLoading] = useState(false);
-  const [mensagem, setMensagem] = useState<string | null>(null);
-  const [clienteMaisComprou, setClienteMaisComprou] = useState<{ nome: string; imagem: string } | null>(null);
+  const [chartData, setChartData] = useState<{ nome: string; vezesComprou: number; fill: string }[]>([]); //armazena dados
+  const [mesSelecionado, setMesSelecionado] = useState("1");  //meses para o filtro
+  const [anoSelecionado, setAnoSelecionado] = useState("2024"); //anos para o filtro
+  const [mensagem, setMensagem] = useState<string | null>(null);  ///mensagem se não tiver dados
+  const [clienteMaisComprou, setClienteMaisComprou] = useState<{ nome: string; imagem: string } | null>(null);  //armazena cliente que mais comrpou
 
+  //busca dados do relatório
   useEffect(() => {
     async function fetchData() {
-      setLoading(true);
       try {
         const response: IPedidoRelatorio[] = await PedidoRelatorioService.getListarDados(
           Number(mesSelecionado),
@@ -92,13 +80,12 @@ export function GraficoPB() {
       } catch (error) {
         console.error("Erro ao buscar dados do relatório:", error);
         setMensagem("Erro ao carregar os dados.");
-      } finally {
-        setLoading(false);
       }
     }
     fetchData();
   }, [mesSelecionado, anoSelecionado]);
 
+  //definção do gráfico
   const chartConfig = {
     vezesComprou: {
       label: "Quantidade de clientes que compraram bebidas",
@@ -133,10 +120,7 @@ export function GraficoPB() {
             </SelectContent>
           </Select>
         </div>
-
-        {loading ? (
-          <p className="text-center text-gray-500">Carregando...</p>
-        ) : mensagem ? (
+        {mensagem ? (
           <p className="text-center text-gray-500">{mensagem}</p>
         ) : (
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">

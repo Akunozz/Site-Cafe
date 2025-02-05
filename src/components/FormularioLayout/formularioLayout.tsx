@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+//componente de formulário
+import { useEffect, useState } from "react"
 import {
   useForm,
   SubmitHandler,
@@ -6,13 +7,14 @@ import {
   DefaultValues,
   FieldValues,
   Controller,
-} from "react-hook-form";
-import { fileToBase64 } from "@/utils/imageUtils";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import Select from "react-select";
+} from "react-hook-form"
+import { fileToBase64 } from "@/utils/imageUtils"
+import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import Select from "react-select"
 import { Input } from "@/components/ui/input"
 
+//campos do formulário
 interface Campo {
   id: string;
   label: string;
@@ -30,17 +32,15 @@ interface Campo {
   options?: { value: string | number; label: string }[];
   placeholder?: string;
   validation?: object;
-  /**
-   * Conteúdo opcional para renderizar logo abaixo do campo (ex: um popover).
-   */
   children?: React.ReactNode;
 }
 
+//propriedades
 interface FormularioProps<T extends FieldValues> {
-  campos: Campo[];
-  onSubmit: SubmitHandler<T>;
-  erros?: Record<string, string>;
-  valoresIniciais?: DefaultValues<T>;
+  campos: Campo[];                      //lista de campos
+  onSubmit: SubmitHandler<T>;           //função de envio
+  erros?: Record<string, string>;       //mensagem de erro 
+  valoresIniciais?: DefaultValues<T>;   //valores predefinidos
 }
 
 function Formulario<T extends FieldValues>({
@@ -49,13 +49,12 @@ function Formulario<T extends FieldValues>({
   erros = {},
   valoresIniciais,
 }: FormularioProps<T>) {
-  const { register, handleSubmit, setValue, control } = useForm<T>({
-    defaultValues: valoresIniciais as DefaultValues<T>,
-  });
 
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const [precoFixo, setPrecoFixo] = useState(false);
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null);
+  const { register, handleSubmit, setValue, control } = useForm<T>
+  ({defaultValues: valoresIniciais as DefaultValues<T>});   // inicia o formulário
+  const [mostrarSenha, setMostrarSenha] = useState(false);  // exibi senha
+  const [precoFixo, setPrecoFixo] = useState(false);        // checkbox do preço padrão
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null);  // armazena a pré vizualição de imagem
 
   // Ao carregar, atualiza os valores iniciais (e a imagem se existir)
   useEffect(() => {
@@ -70,10 +69,10 @@ function Formulario<T extends FieldValues>({
     }
   }, [valoresIniciais, setValue]);
 
-  // Exemplo para fixar preço
+  // mudar preço para R$2,30
   useEffect(() => {
     if (precoFixo) {
-      setValue("preco" as Path<T>, 2.3 as any);
+      setValue("preco" as Path<T>, 2.30 as any);
     }
   }, [precoFixo, setValue]);
 
@@ -88,6 +87,7 @@ function Formulario<T extends FieldValues>({
     }
   };
 
+  // Ao remover a imagem, esconde o preview
   const handleRemoverImagem = () => {
     setImagemPreview(null);
     setValue("imagem" as Path<T>, "" as any);
@@ -101,7 +101,7 @@ function Formulario<T extends FieldValues>({
             {campo.label}:
           </label>
 
-          {/* Se for SELECT */}
+
           {campo.type === "select" ? (
             <>
               <Controller
@@ -150,6 +150,8 @@ function Formulario<T extends FieldValues>({
               {/* Se existir children (ex: popover), renderiza abaixo */}
               {campo.children && <div className="mt-2">{campo.children}</div>}
             </>
+
+
           ) : campo.type === "textarea" ? (
             <textarea
               id={campo.id}
@@ -158,6 +160,8 @@ function Formulario<T extends FieldValues>({
               className="formulario-campo"
               defaultValue={valoresIniciais ? valoresIniciais[campo.id] : ""}
             />
+
+
           ) : campo.type === "float" ? (
             <>
               <input
@@ -182,6 +186,8 @@ function Formulario<T extends FieldValues>({
                 </label>
               </div>
             </>
+
+
           ) : campo.type === "file" ? (
             <>
               <Input
@@ -214,8 +220,9 @@ function Formulario<T extends FieldValues>({
                 </div>
               )}
             </>
+
+
           ) : (
-            // Campos de texto, password, etc.
             <input
               id={campo.id}
               type={
@@ -229,8 +236,6 @@ function Formulario<T extends FieldValues>({
               defaultValue={valoresIniciais ? valoresIniciais[campo.id] : ""}
             />
           )}
-
-          {/* Checkbox para mostrar/ocultar senha */}
           {campo.type === "password" && (
             <div className="mt-2 flex items-center gap-2">
               <input
@@ -245,13 +250,16 @@ function Formulario<T extends FieldValues>({
               </label>
             </div>
           )}
+          
 
-          {/* Mensagem de erro abaixo do campo */}
+          {/* Mensagem do zod */}
           {erros[campo.id] && (
             <p className="text-red-500 text-sm">{erros[campo.id]}</p>
           )}
         </div>
       ))}
+
+
       <div className="flex justify-center">
         <Button
           className="w-1/2 bg-azuljava text-white py-3 font-medium rounded-lg hover:bg-laranjajava transition duration-300"
@@ -265,4 +273,4 @@ function Formulario<T extends FieldValues>({
   );
 }
 
-export default Formulario;
+export default Formulario

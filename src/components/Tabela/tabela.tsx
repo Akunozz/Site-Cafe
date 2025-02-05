@@ -1,27 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+//componente de tabela utilizado nas telas de listagens
+import React, { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface TabelaProps {
-  colunas: string[]; 
-  dados?: any[]; 
-  renderLinha: (item: any) => React.ReactNode; 
-  itensPorPagina?: number; 
-  children?: React.ReactNode;
+  colunas: string[];  //colunas
+  dados?: any[];      //array de dados
+  itensTabela: (item: any) => React.ReactNode; //intens da tabela
+  itensPorPagina?: number;  //define quantos itens são exibidos por página 
+  children?: React.ReactNode; //children
 }
 
+//criação da tabela
 const Tabela: React.FC<TabelaProps> = ({
   colunas,
   dados = [],
-  renderLinha,
+  itensTabela,
   itensPorPagina = 10,
 }) => {
-  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [paginaAtual, setPaginaAtual] = useState(1); //define a página atual
 
+  //reinicia tabela se sofrer alteração
   useEffect(() => {
     setPaginaAtual(1);
   }, [dados]);
 
+  //calculo páginas para exibir toda a tabela
   const totalPaginas = Math.ceil(dados.length / itensPorPagina);
 
   // Itens da página atual
@@ -44,7 +48,7 @@ const Tabela: React.FC<TabelaProps> = ({
         <TableBody>
           {dadosPaginados.map((item, index) => (
             <TableRow key={index} className="hover:bg-gray-100">
-              {renderLinha(item)}
+              {itensTabela(item)}
             </TableRow>
           ))}
         </TableBody>
@@ -78,4 +82,4 @@ const Tabela: React.FC<TabelaProps> = ({
   );
 };
 
-export default Tabela;
+export default Tabela

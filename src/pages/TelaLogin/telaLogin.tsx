@@ -64,7 +64,8 @@ function TelaLogin() {
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-6">
-                  {/* Campo Usuário */}
+                  
+                  {/* Usuário */}
                   <div className="grid gap-2">
                     <Label className="text-azuljava" htmlFor="usuario">
                       Usuário
@@ -81,7 +82,7 @@ function TelaLogin() {
                     )}
                   </div>
 
-                  {/* Campo Senha */}
+                  {/* Senha */}
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label className="text-azuljava" htmlFor="senha">
@@ -116,12 +117,15 @@ function TelaLogin() {
                     Login
                   </Button>
                 </div>
+
+                {/* Enfeite */}
                 <div className="mt-4 text-center text-sm">
                   Ainda não tem conta?{" "}
                   <a href="" className="underline underline-offset-4">
                     Cadastre-se
                   </a>
                 </div>
+
               </form>
             </CardContent>
           </Card>

@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import ListagemLayout from "../../components/ListagemLayout/listagemLayout";
-import Tabela from "../../components/Tabela/tabela";
-import PedidoService from "../../services/PedidoService";
-import PessoaService from "../../services/PessoaService";
-import BebidaService from "../../services/BebidaService";
-import IPedido from "../../interfaces/IPedido";
-import IPessoa from "../../interfaces/IPessoa";
-import IBebida from "../../interfaces/IBebida";
-import Alterar from "../../components/Alterar/alterar";
+import { useEffect, useState } from "react"
+import ListagemLayout from "../../components/ListagemLayout/listagemLayout"
+import Tabela from "../../components/Tabela/tabela"
+import PedidoService from "../../services/PedidoService"
+import PessoaService from "../../services/PessoaService"
+import BebidaService from "../../services/BebidaService"
+import IPedido from "../../interfaces/IPedido"
+import IPessoa from "../../interfaces/IPessoa"
+import IBebida from "../../interfaces/IBebida"
+import Alterar from "../../components/Alterar/alterar"
 import { Skeleton } from "@/components/ui/skeleton"
-import BotaoPedido from "@/components/BotaoRelatorio/botaoRelatorio";
+import BotaoPedido from "@/components/BotaoRelatorio/botaoRelatorio"
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
@@ -19,23 +19,24 @@ function ListagemPedido() {
   const [loading, setLoading] = useState(true);
   const [userPermission, setUserPermission] = useState<string | null>(null);
 
-  // busca os pedidos e recupera a permissão do usuário
+  // busca os pedidos
   useEffect(() => {
     async function fetchData() {
       try {
+
         const pedidosResponse = await PedidoService.getListarDados();
         setPedidos(pedidosResponse);
         setPedidosFiltrados(pedidosResponse);
-        // Buscar pessoas
+
         const pessoasResponse = await PessoaService.getListarDados();
         setPessoas(pessoasResponse);
-        // Buscar bebidas
+
         const bebidasResponse = await BebidaService.getListarDados();
         setBebidas(bebidasResponse);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {
-        setLoading(false); // Finaliza o carregamento após buscar os dados
+        setLoading(false);
       }
     }
 
@@ -44,7 +45,6 @@ function ListagemPedido() {
     fetchData();
   }, []);
 
-  // exclui um pedido
   const excluirPedido = async (pedido: IPedido) => {
     if (window.confirm("Tem certeza que deseja excluir este pedido?")) {
       try {
@@ -75,7 +75,6 @@ function ListagemPedido() {
     return bebida ? bebida.nome : "Desconhecida";
   };
 
-  // atualiza a lista filtrada
   const handleFilterChange = (text: string) => {
     const filtro = text.toLowerCase();
     const resultadosFiltrados = pedidos.filter((pedido) =>
@@ -84,16 +83,14 @@ function ListagemPedido() {
     setPedidosFiltrados(resultadosFiltrados);
   };
 
-  // mensagem de carregamento
   if (pessoas.length === 0 || bebidas.length === 0) {
     <Skeleton className="w-[100px] h-[20px] rounded-full" />
   }
 
-  // campo da listagem
   const colunas = [
     "Cliente", "Bebida", "Valor Unitário", "Quantidade", "Total", "Data de Compra", "Alterar"
   ];
-  const renderLinha = (pedido: IPedido) => (
+  const itensTabela = (pedido: IPedido) => (
     <>
       <td className="p-5">{getPessoaNome(pedido.cliente_id)}</td>
       <td>{getBebidaNome(pedido.bebida_id)}</td>
@@ -117,22 +114,20 @@ function ListagemPedido() {
 
   return (
     <ListagemLayout
-      titulo="Listagem de Pedidos" 
+      titulo="Listagem de Pedidos"
       onFilterChange={handleFilterChange}
-      enderecoAdicionar="/cadastro-pedidos" 
+      enderecoAdicionar="/cadastro-pedidos"
       textAdicionar="Cadastrar Novo Pedido"
-      botaoRelatorio={<BotaoPedido/>} 
-      >
+      botaoRelatorio={<BotaoPedido />}
+    >
       {loading ? (
-        // Mostra Skeleton enquanto os dados carregam
         <div className="flex flex-col gap-4">
           {[...Array(13)].map((_, index) => (
             <Skeleton key={index} className="w-full h-[40px] rounded-md" />
           ))}
         </div>
       ) : (
-        // Mostra a tabela quando os dados forem carregados
-        <Tabela colunas={colunas} dados={pedidosFiltrados} renderLinha={renderLinha} />
+        <Tabela colunas={colunas} dados={pedidosFiltrados} itensTabela={itensTabela} />
       )}
     </ListagemLayout>
   );

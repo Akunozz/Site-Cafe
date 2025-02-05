@@ -1,70 +1,67 @@
-import { Button } from "@/components/ui/button";
-import { Eye, Trash2 } from "lucide-react";
+//componente utilizado na listagem de clientes para gerar uma tabela de setores com opçao para exluir caso
+import { Button } from "@/components/ui/button"
+import { Eye, Trash2 } from "lucide-react"
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
-import SetorService from "@/services/SetorService";
-import ISetores from "@/interfaces/ISetores";
-import Tabela from "../Tabela/tabela";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/components/ui/dialog"
+import { useState, useEffect } from "react"
+import SetorService from "@/services/SetorService"
+import ISetores from "@/interfaces/ISetores"
+import Tabela from "../Tabela/tabela"
 
 function BotaoSetores() {
-  const [setores, setSetores] = useState<ISetores[]>([]);
-  const [setoresFiltrados, setSetoresFiltrados] = useState<ISetores[]>([]);
-  const [userPermission, setUserPermission] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [setores, setSetores] = useState<ISetores[]>([]); //amazena setores
+  const [setoresFiltrados, setSetoresFiltrados] = useState<ISetores[]>([]); //não possui pesquisa de setor, mas na tabela é obrigatório esse prop
+  const [userPermission, setUserPermission] = useState<string | null>(null); //permissão do usuário
 
-  // Busca os setores ao montar o componente
+  // busca os setores
   useEffect(() => {
     async function fetchSetores() {
       try {
-        const response = await SetorService.getListarDados();
-        setSetores(response);
-        setSetoresFiltrados(response);
+        const response = await SetorService.getListarDados()
+        setSetores(response)
+        setSetoresFiltrados(response)
       } catch (error) {
-        console.error("Erro ao buscar setores:", error);
-      } finally {
-        setLoading(false);
+        console.error("Erro ao buscar setores:", error)
       }
     }
-    fetchSetores();
+    fetchSetores()
   }, []);
 
-  // Recupera a permissão do usuário
+  // permissão
   useEffect(() => {
-    const perm = localStorage.getItem("permissao");
-    setUserPermission(perm);
+    const perm = localStorage.getItem("permissao")
+    setUserPermission(perm)
   }, []);
 
-  // Função para excluir um setor
+  // excluir setor
   const excluirSetor = async (setor: ISetores) => {
     if (window.confirm("Tem certeza que deseja excluir este setor?")) {
       try {
-        const setorDeletado = await SetorService.deleteDados(setor.id);
+        const setorDeletado = await SetorService.deleteDados(setor.id)
         if (setorDeletado) {
-          const setoresAtualizados = setores.filter((c) => c.id !== setor.id);
-          setSetores(setoresAtualizados);
-          setSetoresFiltrados(setoresAtualizados);
+          const setoresAtualizados = setores.filter((c) => c.id !== setor.id)
+          setSetores(setoresAtualizados)
+          setSetoresFiltrados(setoresAtualizados)
         } else {
-          alert("Setor em uso, não é possível deletar");
+          alert("Setor em uso, não é possível deletar")
         }
       } catch (error) {
-        console.error(error);
-        alert("Ocorreu um erro ao excluir o setor.");
+        console.error(error)
+        alert("Ocorreu um erro ao excluir o setor.")
       }
     }
   };
 
-  // Definição das colunas da tabela
+  // colunas tabela
   const colunas = ["Setor", "Deletar"];
 
-  // Renderiza cada linha da tabela
-  const renderLinha = (setor: ISetores) => (
+  // itens tabela
+  const itensTabela = (setor: ISetores) => (
     <>
       <td>{setor.nome}</td>
       <td>
@@ -96,14 +93,8 @@ function BotaoSetores() {
         <DialogHeader>
           <DialogTitle className="flex justify-center text-azuljava font-bold">Setores Cadastrados</DialogTitle>
         </DialogHeader>
-        {loading ? (
-          <div className="flex flex-col gap-4">
-            {[...Array(5)].map((_, index) => (
-              <Skeleton key={index} className="w-full h-[40px] rounded-md" />
-            ))}
-          </div>
-        ) : setoresFiltrados.length > 0 ? (
-          <Tabela colunas={colunas} dados={setoresFiltrados} renderLinha={renderLinha} />
+        {setoresFiltrados.length > 0 ? (
+          <Tabela colunas={colunas} dados={setoresFiltrados} itensTabela={itensTabela} />
         ) : (
           <p className="text-center text-gray-500">Nenhum setor cadastrado.</p>
         )}
@@ -112,4 +103,4 @@ function BotaoSetores() {
   );
 }
 
-export default BotaoSetores;
+export default BotaoSetores

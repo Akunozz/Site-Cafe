@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import Formulario from "../../components/FormularioLayout/formularioLayout";
-import PageLayout from "../../components/PageLayoutCadastro/pageLayout";
-import PedidoService from "../../services/PedidoService";
-import BebidaService from "../../services/BebidaService";
-import PessoaService from "../../services/PessoaService";
-import { z } from "zod";
-import { pedidosEditarSchema } from "../../schemas/pedidosEditarSchema";
+import { useState, useEffect } from "react"
+import Formulario from "../../components/FormularioLayout/formularioLayout"
+import PageLayout from "../../components/PageLayoutCadastro/pageLayout"
+import PedidoService from "../../services/PedidoService"
+import BebidaService from "../../services/BebidaService"
+import PessoaService from "../../services/PessoaService"
+import { z } from "zod"
+import { pedidosEditarSchema } from "../../schemas/pedidosEditarSchema"
 import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner";
+import { toast } from "sonner"
 
 type Campo<T> = {
     id: keyof T;
@@ -17,7 +17,6 @@ type Campo<T> = {
     options?: { value: number; label: string }[];
 };
 
-// Verificação com Zod
 type PedidoForm = z.infer<typeof pedidosEditarSchema>;
 
 const EditarPedido = () => {
@@ -31,21 +30,15 @@ const EditarPedido = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                // Buscar dados do pedido
                 const pedidoResponse = await PedidoService.getIdDados(id!);
-                
-                // Obter o cliente diretamente do pedidoResponse
                 if (pedidoResponse?.cliente) {
-                    const clienteId = pedidoResponse.cliente.id; // Acessa o ID do cliente
-
-                    // Buscar dados do cliente usando o ID
+                    const clienteId = pedidoResponse.cliente.id;
                     const clienteResponse = await PessoaService.getIdDados(String(clienteId));
                     setClienteNome(clienteResponse?.nome || "Cliente não encontrado");
                 } else {
                     setClienteNome("Cliente não encontrado");
                 }
 
-                // Buscar dados das bebidas
                 const bebidasResponse = await BebidaService.getListarDados();
                 setBebidas(
                     bebidasResponse.map((bebida) => ({
@@ -69,8 +62,6 @@ const EditarPedido = () => {
         fetchData();
     }, [id]);
 
-
-    // Configuração dos campos do formulário
     const campos: Campo<PedidoForm>[] = [
         {
             id: "bebida_id", label: "Bebida", type: "select", placeholder: "Selecione uma bebida",
@@ -82,17 +73,12 @@ const EditarPedido = () => {
         { id: "quantidade", label: "Quantidade", type: "number", placeholder: "Digite a quantidade" },
     ];
 
-    // Função de envio do formulário
     const handleSubmit = async (data: any) => {
         try {
-            //limpa os erros do zod
             setErros({});
-
             const validData = pedidosEditarSchema.parse(data);
-            // Encontre a bebida selecionada pelo ID
             const bebidaSelecionada = bebidas.find((bebida) => bebida.id === Number(data.bebida_id));
             const unitario = bebidaSelecionada?.preco || 0;
-            // Calcule o total
             const total = unitario * data.quantidade;
 
             const payload = {
@@ -110,12 +96,11 @@ const EditarPedido = () => {
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
-                // Mapeia os erros para o estado
                 const errosMap = error.errors.reduce((acc, err) => {
                     acc[err.path[0]] = err.message;
                     return acc;
                 }, {} as Record<string, string>);
-                setErros(errosMap); // Atualiza os erros no estado
+                setErros(errosMap);
             } else {
                 toast.error("Ocorreu um erro ao salvar os dados.");
             }

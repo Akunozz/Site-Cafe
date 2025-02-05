@@ -1,7 +1,8 @@
-import NavBar from "../NavBar/navbar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ClipboardPlus } from "lucide-react";
+//layout da listagem utilizado nas telas de listagens
+import NavBar from "../NavBar/navbar"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { ClipboardPlus } from "lucide-react"
 
 interface ListagemLayoutProps {
   titulo: string;                           // h1 da página
@@ -9,8 +10,8 @@ interface ListagemLayoutProps {
   children?: React.ReactNode;                // children
   enderecoAdicionar: string;                // link para cadastro
   textAdicionar: string;                    // texto do botão de cadastro
-  botaoSetor?: React.ReactNode;
-  botaoRelatorio?: React.ReactNode;
+  botaoSetor?: React.ReactNode;             // botão opcional para vizualizar setores
+  botaoRelatorio?: React.ReactNode;         // botão opcional para gerar relatório
 }
 
 const ListagemLayout: React.FC<ListagemLayoutProps> = ({
@@ -29,6 +30,7 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
         <h1 className="text-4xl font-bold text-white mb-4">{titulo}</h1>
         <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">
           <div className="flex p-2">
+
             {/* Filtro */}
             <div className="flex items-center w-1/4 mr-auto">
               <Input
@@ -39,10 +41,12 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
               />
             </div>
 
-            {/* Botão de Adicionar */}
+            {/* Botões de setor e relatório */}
             <div className="flex gap-4">
               {botaoRelatorio}
               {botaoSetor}
+
+              {/* Botão de Adicionar */}
               <a href={enderecoAdicionar}>
                 <Button
                   className="bg-azuljava hover:bg-laranjajava transition-all duration-300 p-5 text-base"
@@ -60,4 +64,4 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
   );
 };
 
-export default ListagemLayout;
+export default ListagemLayout

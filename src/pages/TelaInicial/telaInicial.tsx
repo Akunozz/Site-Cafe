@@ -22,7 +22,6 @@ function TelaInicial() {
   const router = useRouter()
 
   useEffect(() => {
-    // Recupera os dados do usuário armazenados no localStorage
     const data = localStorage.getItem("loginData")
     if (data) {
       setLoginData(JSON.parse(data))
@@ -31,13 +30,12 @@ function TelaInicial() {
 
   return (
     <div className="navbar">
-      {/* Barra de navegação */}
       <NavBar />
 
-      {/* Conteúdo principal */}
       <main className="flex-1 p-8">
         <div className="flex justify-between items-center">
-          {/* Foto do Cliente */}
+
+          {/* Foto */}
           <div className="flex items-center gap-4">
             {loginData?.pessoa?.imagem ? (
               <img
@@ -51,7 +49,7 @@ function TelaInicial() {
             )}
           </div>
 
-          {/* Logo da Cafeteria */}
+          {/* Logo */}
           <div className="flex flex-col items-center text-white">
             <img src={cafe} alt="Cafeteria Java" className="h-24 w-24 mr-12" />
             <h1 className="text-lg font-bold p-2 mr-12">Cafeteria Java</h1>
@@ -66,14 +64,14 @@ function TelaInicial() {
           </Button>
         </div>
 
-        {/* Mensagem de boas-vindas */}
+        {/* Nome */}
         {loginData && loginData.pessoa && (
           <p className="mt-4 text-white text-lg">
             ☕ Bem-vindo, <strong>{loginData.pessoa.nome}</strong> ☕
           </p>
         )}
 
-        {/* Grid de gráficos */}
+        {/* Gráficos */}
         <div className="flex justify-center text-white font-semibold text-2xl mr-3">Dashboards</div>
         <Carousel
           plugins={[

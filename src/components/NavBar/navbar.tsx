@@ -1,3 +1,4 @@
+//componente da navbar
 import { useState } from "react"
 import { useRouter } from "@tanstack/react-router"
 import {
@@ -15,13 +16,15 @@ import {
 } from "lucide-react"
 
 function NavBar() {
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [clientesOpen, setClientesOpen] = useState(false);
-  const [bebidasOpen, setBebidasOpen] = useState(false);
-  const [pedidosOpen, setPedidosOpen] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);        //navbar aberta ou fechada
+  const [clientesOpen, setClientesOpen] = useState(false);  //estados para verificar_
+  const [bebidasOpen, setBebidasOpen] = useState(false);    //se está aberto o accordion_
+  const [pedidosOpen, setPedidosOpen] = useState(false);    //e não fechar a navbar.
 
+  //rota
   const router = useRouter();
 
+  //se mouse sair fecha + não tem accordion aberto
   const handleMouseLeave = () => {
     if (!clientesOpen && !bebidasOpen && !pedidosOpen) {
       setIsNavOpen(false);
@@ -37,6 +40,7 @@ function NavBar() {
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex flex-col h-full">
+
         {/* Logo */}
         <div className="px-4 py-5 flex justify-center text-2xl font-bold">
           {isNavOpen ? "☕ Cafeteria" : "☕"}
@@ -45,7 +49,7 @@ function NavBar() {
         {/* Menu */}
         <nav className="flex flex-col gap-4 mt-4 pt-2">
 
-          {/* Accordion para Tela Inicial */}
+          {/* Accordion Tela Inicial */}
           <Accordion
             type="single"
           >
@@ -61,7 +65,7 @@ function NavBar() {
             </AccordionItem>
           </Accordion>
 
-          {/* Accordion para Clientes */}
+          {/* Clientes */}
           <Accordion
             type="single"
             collapsible
@@ -91,7 +95,7 @@ function NavBar() {
             </AccordionItem>
           </Accordion>
 
-          {/* Accordion para Bebidas */}
+          {/* Bebidas */}
           <Accordion
             type="single"
             collapsible
@@ -121,7 +125,7 @@ function NavBar() {
             </AccordionItem>
           </Accordion>
 
-          {/* Accordion para Pedidos */}
+          {/* Pedidos */}
           <Accordion
             type="single"
             collapsible
@@ -156,4 +160,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;
+export default NavBar

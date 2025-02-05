@@ -41,7 +41,7 @@ const pessoasRoutes = [
     path: "/pessoas/${cliente.id}",
     component: () => (
       <AuthGuard>
-        <ProtectedRoute allowedPermissions={["ADMIN", "AUX"]}>
+        <ProtectedRoute allowedPermissions={["ADMIN"]}>
           <EditarCliente />
         </ProtectedRoute>
       </AuthGuard>

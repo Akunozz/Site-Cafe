@@ -1,29 +1,26 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "@tanstack/react-router";
+//verifica permissão do usuário e restringe onde não tem permissão
+import React, { useEffect, useState, useRef } from "react"
+import { useRouter } from "@tanstack/react-router"
 
 interface ProtectedRouteProps {
-  allowedPermissions: string[];
-  children: React.ReactNode;
+  allowedPermissions: string[];   //permissão permitida
+  children: React.ReactNode;      //children que engloba o conteúdo protegido
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedPermissions, children }) => {
-  const [userPermission, setUserPermission] = useState<string | null>(null);
-  const router = useRouter();
-  // useRef para garantir que o alerta seja exibido apenas uma vez
-  const hasAlerted = useRef(false);
+  const [userPermission, setUserPermission] = useState<string | null>(null);  //armazena permissão
+  const router = useRouter();  //rota
+  const hasAlerted = useRef(false);  //só um alerta
 
   useEffect(() => {
-    // Recupera a permissão do usuário armazenada no localStorage
-    const perm = localStorage.getItem("permissao");
+    const perm = localStorage.getItem("permissao"); //busca a permissão
     if (perm) {
-      // Remove espaços extras e converte para letras maiúsculas para padronizar
       setUserPermission(perm.trim().toUpperCase());
     }
   }, []);
 
   useEffect(() => {
     if (userPermission !== null) {
-      // Normaliza as permissões permitidas para caixa alta
       const normalizedAllowed = allowedPermissions.map(p => p.trim().toUpperCase());
       if (!normalizedAllowed.includes(userPermission)) {
         if (!hasAlerted.current) {
