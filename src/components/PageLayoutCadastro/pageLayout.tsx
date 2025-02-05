@@ -13,7 +13,7 @@ interface PageLayoutProps {
 const PageLayout: React.FC<PageLayoutProps> = ({ titulo, children, rota }) => {
   return (
     <>
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-right" richColors duration={5000}/>
       <div className="navbar">
         <NavBar />
 
