@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const pessoaSchema = z.object({
-  nome: z.string().min(1, "O nome é obrigatório"),
-  setor_id: z.coerce.string().nonempty("Selecione um setor"),
+  nome: z.string().min(1, "Insira um nome"),
+  setor_id: z.any().refine(val => val !== undefined, { message: "Selecione um setor" }),
   imagem: z.any().optional(),
-  usuario: z.string().min(1, "O usuário é obrigatório"),
+  usuario: z.string().min(1, "Insira um usuário"),
   senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-  permissao: z.string().nonempty("Selecione uma permissão"),
-  status: z.string().nonempty("Selecione um status")
+  permissao: z.any().refine(val => val !== undefined, { message: "Selecione uma permissão" }),
+  status: z.any().refine(val => val !== undefined, { message: "Selecione um status" }),
 });
