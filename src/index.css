@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.formulario-label {
+    @apply block text-sm font-medium text-laranjajava;
+}
+
+.formulario-campo {
+    @apply w-full mt-1 p-2 border border-laranjajava rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400;
+}
+
+.navbar {
+    @apply flex min-h-screen bg-preto;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
