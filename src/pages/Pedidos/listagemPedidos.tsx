@@ -10,6 +10,7 @@ import IBebida from "../../interfaces/IBebida"
 import Alterar from "../../components/Alterar/alterar"
 import { Skeleton } from "@/components/ui/skeleton"
 import BotaoPedido from "@/components/BotaoRelatorio/botaoRelatorio"
+import { toast } from "sonner"
 
 function ListagemPedido() {
   const [pedidos, setPedidos] = useState<IPedido[]>([]);
@@ -18,6 +19,7 @@ function ListagemPedido() {
   const [bebidas, setBebidas] = useState<IBebida[]>([]);
   const [loading, setLoading] = useState(true);
   const [userPermission, setUserPermission] = useState<string | null>(null);
+  const [paginaAtual, setPaginaAtual] = useState(1);
 
   // busca os pedidos
   useEffect(() => {
@@ -25,8 +27,9 @@ function ListagemPedido() {
       try {
 
         const pedidosResponse = await PedidoService.getListarDados();
-        setPedidos(pedidosResponse);
-        setPedidosFiltrados(pedidosResponse);
+        const pedidosOrdenados = pedidosResponse.sort((a, b) => Number(a.id) - Number(b.id))
+        setPedidos(pedidosOrdenados);
+        setPedidosFiltrados(pedidosOrdenados);
 
         const pessoasResponse = await PessoaService.getListarDados();
         setPessoas(pessoasResponse);
@@ -53,6 +56,7 @@ function ListagemPedido() {
           const pedidosAtualizados = pedidos.filter((c) => c.id !== pedido.id);
           setPedidos(pedidosAtualizados);
           setPedidosFiltrados(pedidosAtualizados);
+          toast.success("Pedido excluido com sucesso")
         } else {
           alert("Erro ao deletar pedido.");
         }
@@ -127,7 +131,11 @@ function ListagemPedido() {
           ))}
         </div>
       ) : (
-        <Tabela colunas={colunas} dados={pedidosFiltrados} itensTabela={itensTabela} />
+        <Tabela colunas={colunas}
+          dados={pedidosFiltrados}
+          itensTabela={itensTabela}
+          paginaAtual={paginaAtual}
+          setPaginaAtual={setPaginaAtual} />
       )}
     </ListagemLayout>
   );

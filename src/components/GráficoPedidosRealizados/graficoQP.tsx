@@ -97,7 +97,7 @@ export function GraficoQP() {
       </CardHeader>
       <CardContent>
         {/* Dropdown de seleção de datas */}
-        <div className="flex gap-4 mb-4">
+        <div className="flex gap-4 mb-4 justify-center">
           <Select onValueChange={setMesInicial} defaultValue={mesInicial}>
             <SelectTrigger className="w-1/3 border-laranjajava">
               <SelectValue placeholder="Mês Inicial" />

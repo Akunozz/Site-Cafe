@@ -16,8 +16,8 @@ import { Input } from "@/components/ui/input"
 
 //campos do formulário
 interface Campo {
-  id: string;
-  label: string;
+  id: string
+  label: string
   type:
     | "text"
     | "email"
@@ -28,19 +28,19 @@ interface Campo {
     | "date"
     | "textarea"
     | "select"
-    | "float";
-  options?: { value: string | number; label: string }[];
-  placeholder?: string;
-  validation?: object;
-  children?: React.ReactNode;
+    | "float"
+  options?: { value: string | number; label: string }[]
+  placeholder?: string
+  validation?: object
+  children?: React.ReactNode
 }
 
 //propriedades
 interface FormularioProps<T extends FieldValues> {
-  campos: Campo[];                      //lista de campos
-  onSubmit: SubmitHandler<T>;           //função de envio
-  erros?: Record<string, string>;       //mensagem de erro 
-  valoresIniciais?: DefaultValues<T>;   //valores predefinidos
+  campos: Campo[]                      //lista de campos
+  onSubmit: SubmitHandler<T>           //função de envio
+  erros?: Record<string, string>       //mensagem de erro 
+  valoresIniciais?: DefaultValues<T>   //valores predefinidos
 }
 
 function Formulario<T extends FieldValues>({
@@ -50,51 +50,60 @@ function Formulario<T extends FieldValues>({
   valoresIniciais,
 }: FormularioProps<T>) {
 
-  const { register, handleSubmit, setValue, control } = useForm<T>
-  ({defaultValues: valoresIniciais as DefaultValues<T>});   // inicia o formulário
-  const [mostrarSenha, setMostrarSenha] = useState(false);  // exibi senha
-  const [precoFixo, setPrecoFixo] = useState(false);        // checkbox do preço padrão
-  const [imagemPreview, setImagemPreview] = useState<string | null>(null);  // armazena a pré vizualição de imagem
+  const { register, handleSubmit, setValue, control, reset } = useForm<T>
+  ({defaultValues: valoresIniciais as DefaultValues<T>})   // inicia o formulário
+  const [mostrarSenha, setMostrarSenha] = useState(false)  // exibi senha
+  const [precoFixo, setPrecoFixo] = useState(false)        // checkbox do preço padrão
+  const [imagemPreview, setImagemPreview] = useState<string | null>(null)  // armazena a pré vizualição de imagem
 
-  // Ao carregar, atualiza os valores iniciais (e a imagem se existir)
+  // Atualiza os valores iniciais (e a imagem se existir)
   useEffect(() => {
     if (valoresIniciais) {
       Object.keys(valoresIniciais).forEach((key) => {
-        setValue(key as Path<T>, valoresIniciais[key]);
-      });
+        setValue(key as Path<T>, valoresIniciais[key])
+      })
 
       if ((valoresIniciais as any).imagem) {
-        setImagemPreview((valoresIniciais as any).imagem);
+        setImagemPreview((valoresIniciais as any).imagem)
       }
     }
-  }, [valoresIniciais, setValue]);
+  }, [valoresIniciais, setValue])
 
   // mudar preço para R$2,30
   useEffect(() => {
     if (precoFixo) {
-      setValue("preco" as Path<T>, 2.30 as any);
+      setValue("preco" as Path<T>, 2.30 as any)
     }
-  }, [precoFixo, setValue]);
+  }, [precoFixo, setValue])
+
+    // Lida com o envio do formulário e faz o reset após o envio
+    const handleFormSubmit: SubmitHandler<T> = async (data) => {
+      await onSubmit(data)
+      reset()
+      setImagemPreview(null)
+      setPrecoFixo(false)
+      setMostrarSenha(false)
+    }
 
   // Ao selecionar arquivo, converte para base64
   const handleImagemSelecionada = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]
     if (file) {
-      const base64 = await fileToBase64(file);
-      setImagemPreview(base64);
+      const base64 = await fileToBase64(file)
+      setImagemPreview(base64)
     }
-  };
+  }
 
   // Ao remover a imagem, esconde o preview
   const handleRemoverImagem = () => {
-    setImagemPreview(null);
-    setValue("imagem" as Path<T>, "" as any);
-  };
+    setImagemPreview(null)
+    setValue("imagem" as Path<T>, "" as any)
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       {campos.map((campo) => (
         <div key={campo.id}>
           <label className="formulario-label" htmlFor={campo.id}>
@@ -270,7 +279,7 @@ function Formulario<T extends FieldValues>({
         </Button>
       </div>
     </form>
-  );
+  )
 }
 
 export default Formulario

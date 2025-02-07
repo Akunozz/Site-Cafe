@@ -95,7 +95,7 @@ export function GraficoBV() {
         <CardTitle>Bebidas mais vendidas em {meses.find(m => m.value === mesSelecionado)?.label} {anoSelecionado}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <div className="flex gap-4 mb-4">
+        <div className="flex justify-center gap-4 mb-4">
           <Select onValueChange={setMesSelecionado} defaultValue={mesSelecionado}>
             <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o mês" />
@@ -136,7 +136,7 @@ export function GraficoBV() {
               <img
                 src={bebidaMaisVendida.imagem}
                 alt={bebidaMaisVendida.nome}
-                className="w-32 h-32 mt-2 rounded-lg shadow-md"
+                className="w-28 h-28 mt-2 rounded-lg shadow-md"
               />
             ) : (
               <Coffee className="w-24 h-24 text-azuljava mx-auto" />

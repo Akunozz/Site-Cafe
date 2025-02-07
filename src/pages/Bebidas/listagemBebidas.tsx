@@ -6,59 +6,63 @@ import IBebida from "../../interfaces/IBebida"
 import Alterar from "../../components/Alterar/alterar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Coffee } from "lucide-react"
+import { toast } from "sonner"
 
 function ListagemBebidas() {
   const [bebidas, setBebidas] = useState<IBebida[]>([])
   const [bebidasFiltradas, setBebidasFiltradas] = useState<IBebida[]>([])
   const [loading, setLoading] = useState(true)
   const [userPermission, setUserPermission] = useState<string | null>(null)
+  const [paginaAtual, setPaginaAtual] = useState(1);
 
   // busca bebidas
   useEffect(() => {
     async function fetchBebidas() {
       try {
-        const response = await BebidaService.getListarDados();
-        setBebidas(response);
-        setBebidasFiltradas(response);
+        const response = await BebidaService.getListarDados()
+        const bebidasOrdenadas = response.sort((a, b) => Number(a.id) - Number(b.id))
+        setBebidas(bebidasOrdenadas)
+        setBebidasFiltradas(bebidasOrdenadas)
       } catch (error) {
-        console.error("Erro ao buscar bebidas:", error);
+        console.error("Erro ao buscar bebidas:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchBebidas();
-    
-    const perm = localStorage.getItem("permissao");
-    setUserPermission(perm);
-  }, []);
+    fetchBebidas()
+
+    const perm = localStorage.getItem("permissao")
+    setUserPermission(perm)
+  }, [])
 
   const excluirBebida = async (bebida: IBebida) => {
     if (window.confirm("Tem certeza que deseja excluir esta bebida?")) {
       try {
-        const bebidaDeletada = await BebidaService.deleteDados(bebida.id);
+        const bebidaDeletada = await BebidaService.deleteDados(bebida.id)
         if (bebidaDeletada) {
-          const bebidasAtualizadas = bebidas.filter((c) => c.id !== bebida.id);
-          setBebidas(bebidasAtualizadas);
-          setBebidasFiltradas(bebidasAtualizadas);
+          const bebidasAtualizadas = bebidas.filter((c) => c.id !== bebida.id)
+          setBebidas(bebidasAtualizadas)
+          setBebidasFiltradas(bebidasAtualizadas)
+          toast.success("Bebida excluida com sucesso")
         } else {
-          alert("Erro ao deletar bebida.");
+          alert("Erro ao deletar bebida.")
         }
       } catch (error) {
-        console.error(error);
-        alert("Ocorreu um erro ao deletar.");
+        console.error(error)
+        alert("Ocorreu um erro ao deletar.")
       }
     }
-  };
+  }
 
   const handleFilterChange = (text: string) => {
-    const filtro = text.toLowerCase();
+    const filtro = text.toLowerCase()
     const resultadosFiltrados = bebidas.filter((bebida) =>
       bebida.nome.toLowerCase().includes(filtro)
-    );
-    setBebidasFiltradas(resultadosFiltrados);
-  };
+    )
+    setBebidasFiltradas(resultadosFiltrados)
+  }
 
-  const colunas = ["Imagem", "Nome", "Descrição", "Preço", "Status", "Alterar"];
+  const colunas = ["Imagem", "Nome", "Descrição", "Preço", "Status", "Alterar"]
 
   const itensTabela = (bebida: IBebida) => (
     <>
@@ -89,12 +93,12 @@ function ListagemBebidas() {
           onExcluir={
             userPermission === "ADMIN" || userPermission === "AUX"
               ? () => excluirBebida(bebida)
-              : () =>alert("Você não tem permissão para excluir esta bebida.")
+              : () => alert("Você não tem permissão para excluir esta bebida.")
           }
         />
       </td>
     </>
-  );
+  )
 
   return (
     <ListagemLayout
@@ -110,10 +114,16 @@ function ListagemBebidas() {
           ))}
         </div>
       ) : (
-        <Tabela colunas={colunas} dados={bebidasFiltradas} itensTabela={itensTabela} />
+        <Tabela
+          colunas={colunas}
+          dados={bebidasFiltradas}
+          itensTabela={itensTabela}
+          paginaAtual={paginaAtual}
+          setPaginaAtual={setPaginaAtual}
+        />
       )}
     </ListagemLayout>
-  );
+  )
 }
 
 export default ListagemBebidas

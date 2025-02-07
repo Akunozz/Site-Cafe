@@ -1,6 +1,6 @@
 //layout de página para telas de cadastros
 import React from "react"
-import NavBar from "../NavBar/navbar"
+import Layout from "../LayoutNavBar/LayoutNavBar";
 import Back from "../Back/back"
 import { Toaster } from "sonner"
 
@@ -15,7 +15,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ titulo, children, rota }) => {
     <>
       <Toaster position="top-right" richColors duration={5000}/>
       <div className="navbar">
-        <NavBar />
+        <Layout/>
 
         <div className="flex-1 flex justify-center items-center bg-preto p-4">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mr-16">

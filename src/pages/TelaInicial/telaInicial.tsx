@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { GraficoPB } from "@/components/GráficoClientesCompras/graficoPB"
 import { GraficoBV } from "@/components/GráficoBebidasVendidas/graficoBV"
 import { GraficoQP } from "@/components/GráficoPedidosRealizados/graficoQP"
-import NavBar from "@/components/NavBar/navbar"
+import Layout from "@/components/LayoutNavBar/LayoutNavBar"
 import cafe from "../../assets/imagens/cafe.png"
 import { Button } from "@/components/ui/button"
 import { CircleUserRound } from "lucide-react"
@@ -30,7 +30,7 @@ function TelaInicial() {
 
   return (
     <div className="navbar">
-      <NavBar />
+      <Layout />
 
       <main className="flex-1 p-8">
         <div className="flex justify-between items-center">

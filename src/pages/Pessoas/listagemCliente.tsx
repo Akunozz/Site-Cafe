@@ -7,63 +7,72 @@ import Alterar from "../../components/Alterar/alterar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CircleUserRound } from "lucide-react"
 import BotaoSetores from "@/components/BotaoSetores/botaoSetores"
+import { toast } from "sonner"
 
 function ListagemClientes() {
-  const [clientes, setClientes] = useState<IPessoa[]>([]);
-  const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [userPermission, setUserPermission] = useState<string | null>(null);
+  const [clientes, setClientes] = useState<IPessoa[]>([])
+  const [clientesFiltrados, setClientesFiltrados] = useState<IPessoa[]>([])
+  const [loading, setLoading] = useState(true)
+  const [userPermission, setUserPermission] = useState<string | null>(null)
+  const [paginaAtual, setPaginaAtual] = useState(1)
 
-  // busca clientes
   useEffect(() => {
     async function fetchClientes() {
       try {
-        const response = await pessoaService.getListarDados();
-        setClientes(response);
-        setClientesFiltrados(response);
+        const response = await pessoaService.getListarDados()
+        const clientesOrdenados = response.sort((a, b) => Number(a.id) - Number(b.id))
+        setClientes(clientesOrdenados)
+        setClientesFiltrados(clientesOrdenados)
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error("Erro ao buscar clientes:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchClientes();
+    fetchClientes()
 
-    const perm = localStorage.getItem("permissao");
-    setUserPermission(perm);
-  }, []);
+    const perm = localStorage.getItem("permissao")
+    setUserPermission(perm)
+  }, [])
 
   const excluirCliente = async (cliente: IPessoa) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
-        const clienteDeletado = await pessoaService.deleteDados(cliente.id);
+        const clienteDeletado = await pessoaService.deleteDados(cliente.id)
         if (clienteDeletado) {
-          const clientesAtualizados = clientes.filter(
-            (c) => c.id !== cliente.id
-          );
-          setClientes(clientesAtualizados);
-          setClientesFiltrados(clientesAtualizados);
+          const clientesAtualizados = clientes.filter((c) => c.id !== cliente.id)
+          setClientes(clientesAtualizados)
+          setClientesFiltrados(clientesAtualizados)
+
+          const totalPaginas = Math.ceil(clientesAtualizados.length / 10) // 10 itens por página
+          if (paginaAtual > totalPaginas && totalPaginas > 0) {
+            setPaginaAtual(totalPaginas) // Vai para a última página válida se for o último item
+          }
+
+          toast.success("Cliente apagado com sucesso")
         } else {
-          alert("Erro ao deletar cliente.");
+          alert("Erro ao deletar cliente.")
         }
       } catch (error) {
-        console.error(error);
-        alert("Ocorreu um erro ao deletar.");
+        console.error(error)
+        alert("Ocorreu um erro ao deletar.")
       }
     }
-  };
+  }
 
   const handleFilterChange = (text: string) => {
-    const filtro = text.toLowerCase();
+    const filtro = text.toLowerCase()
     const resultadosFiltrados = clientes.filter((cliente) =>
       cliente.nome.toLowerCase().includes(filtro)
-    );
-    setClientesFiltrados(resultadosFiltrados);
-  };
+    )
+    setClientesFiltrados(resultadosFiltrados)
+    setPaginaAtual(1) // Reinicia a página ao aplicar um novo filtro
+  }
 
-  const colunas = ["Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"];
+  const colunas = ["ID", "Foto", "Nome", "Setor", "Permissão", "Status", "Alterar"]
   const itensTabela = (cliente: IPessoa) => (
     <>
+    <td>{cliente.id}</td>
       <td className="text-center p-2">
         {cliente.imagem ? (
           <img
@@ -80,10 +89,7 @@ function ListagemClientes() {
       <td>{cliente.setor.nome}</td>
       <td>{cliente.permissao}</td>
       <td>
-        <span
-          className={`${cliente.status === "Ativo" ? "text-green-500" : "text-red-500"
-            }`}
-        >
+        <span className={cliente.status === "Ativo" ? "text-green-500" : "text-red-500"}>
           {cliente.status}
         </span>
       </td>
@@ -99,7 +105,7 @@ function ListagemClientes() {
         />
       </td>
     </>
-  );
+  )
 
   return (
     <ListagemLayout
@@ -116,10 +122,16 @@ function ListagemClientes() {
           ))}
         </div>
       ) : (
-        <Tabela colunas={colunas} dados={clientesFiltrados} itensTabela={itensTabela} />
+        <Tabela
+          colunas={colunas}
+          dados={clientesFiltrados}
+          itensTabela={itensTabela}
+          paginaAtual={paginaAtual}
+          setPaginaAtual={setPaginaAtual}
+        />
       )}
     </ListagemLayout>
-  );
+  )
 }
 
 export default ListagemClientes

@@ -1,5 +1,5 @@
 //layout da listagem utilizado nas telas de listagens
-import NavBar from "../NavBar/navbar"
+import Layout from "../LayoutNavBar/LayoutNavBar";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ClipboardPlus } from "lucide-react"
@@ -25,7 +25,7 @@ const ListagemLayout: React.FC<ListagemLayoutProps> = ({
 }) => {
   return (
     <div className="flex bg-preto h-screen">
-      <NavBar />
+      <Layout/>
       <div className="flex-1 flex flex-col p-8">
         <h1 className="text-4xl font-bold text-white mb-4">{titulo}</h1>
         <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">

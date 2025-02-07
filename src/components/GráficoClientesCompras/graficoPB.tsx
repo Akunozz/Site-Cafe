@@ -98,7 +98,7 @@ export function GraficoPB() {
         <CardTitle>Clientes que mais compraram bebidas em {meses.find(m => m.value === mesSelecionado)?.label} {anoSelecionado}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <div className="flex gap-4 mb-4">
+        <div className="flex justify-center gap-4 mb-4">
           <Select onValueChange={setMesSelecionado} defaultValue={mesSelecionado}>
             <SelectTrigger className="w-1/4 border-laranjajava">
               <SelectValue placeholder="Selecione o mês" />
@@ -138,8 +138,8 @@ export function GraficoPB() {
           {clienteMaisComprou.imagem ? (
           <img 
           src={clienteMaisComprou.imagem} 
-          alt={clienteMaisComprou.nome} 
-          className="w-32 h-32 mt-2 rounded-lg shadow-md" />
+          alt={clienteMaisComprou.nome}
+          className="w-28 h-28 mt-2 rounded-lg shadow-md" />
           ) : (
               <CircleUserRound className="w-24 h-24 text-azuljava mx-auto" />
             )}

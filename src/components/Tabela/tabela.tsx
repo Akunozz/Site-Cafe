@@ -1,40 +1,47 @@
-//componente de tabela utilizado nas telas de listagens
-import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface TabelaProps {
-  colunas: string[];  //colunas
-  dados?: any[];      //array de dados
-  itensTabela: (item: any) => React.ReactNode; //intens da tabela
-  itensPorPagina?: number;  //define quantos itens são exibidos por página 
-  children?: React.ReactNode; //children
+  colunas: string[];
+  dados?: any[];
+  itensTabela: (item: any) => React.ReactNode;
+  itensPorPagina?: number;
+  paginaAtual: number;
+  setPaginaAtual: (pagina: number) => void;
 }
 
-//criação da tabela
 const Tabela: React.FC<TabelaProps> = ({
   colunas,
   dados = [],
   itensTabela,
   itensPorPagina = 10,
+  paginaAtual,
+  setPaginaAtual,
 }) => {
-  const [paginaAtual, setPaginaAtual] = useState(1); //define a página atual
-
-  //reinicia tabela se sofrer alteração
-  useEffect(() => {
-    setPaginaAtual(1);
-  }, [dados]);
-
-  //calculo páginas para exibir toda a tabela
+  const [paginaPesquisa, setPaginaPesquisa] = useState("")
   const totalPaginas = Math.ceil(dados.length / itensPorPagina);
 
-  // Itens da página atual
+  // Garante que a página atual não fique fora do limite após exclusões
+  useEffect(() => {
+    if (paginaAtual > totalPaginas && totalPaginas > 0) {
+      setPaginaAtual(totalPaginas);
+    }
+  }, [dados, paginaAtual, totalPaginas, setPaginaAtual]);
+
   const indiceInicial = (paginaAtual - 1) * itensPorPagina;
   const indiceFinal = indiceInicial + itensPorPagina;
   const dadosPaginados = dados.slice(indiceInicial, indiceFinal);
 
+  const handleIrParaPagina = () => {
+    const pagina = parseInt(paginaPesquisa);
+    if (pagina >= 1 && pagina <= totalPaginas) {
+      setPaginaAtual(pagina);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center w-full p-2 font-medium">
+    <div className="flex flex-col items-center w-full p-2 font-medium h-max-screen">
       <Table className="text-center border-gray-300 text-laranjajava">
         <TableHeader>
           <TableRow>
@@ -57,7 +64,7 @@ const Tabela: React.FC<TabelaProps> = ({
       {/* Paginação */}
       <div className="mt-4 flex items-center gap-4">
         <Button
-          className="bg-azuljava hover:bg-laranjajava text-white"
+          className="bg-azuljava hover:bg-laranjajava text-white hover:text-white"
           variant="outline"
           disabled={paginaAtual === 1}
           onClick={() => setPaginaAtual(paginaAtual - 1)}
@@ -66,20 +73,41 @@ const Tabela: React.FC<TabelaProps> = ({
         </Button>
 
         <span className="text-lg font-semibold">
-          Página {paginaAtual} de {totalPaginas}
+          Página {paginaAtual} de {totalPaginas || 1}
         </span>
 
         <Button
-          className="bg-azuljava hover:bg-laranjajava text-white"
+          className="bg-azuljava hover:bg-laranjajava text-white hover:text-white"
           variant="outline"
-          disabled={paginaAtual === totalPaginas}
+          disabled={paginaAtual === totalPaginas || totalPaginas === 0}
           onClick={() => setPaginaAtual(paginaAtual + 1)}
         >
           Próximo
         </Button>
+
+        {/* Campo de Pesquisa de Página */}
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          min="1"
+          max={totalPaginas}
+          value={paginaPesquisa}
+          onChange={(e) => setPaginaPesquisa(e.target.value)}
+          className="border p-2 rounded-md text-center w-36"
+          placeholder="Ir para página"
+        />
+        <Button
+          className="bg-azuljava hover:bg-laranjajava text-white hover:text-white"
+          variant="outline"
+          onClick={handleIrParaPagina}
+          disabled={!paginaPesquisa || parseInt(paginaPesquisa) > totalPaginas}
+        >
+          Ir
+        </Button>
+      </div>
       </div>
     </div>
   );
 };
 
-export default Tabela
+export default Tabela;
