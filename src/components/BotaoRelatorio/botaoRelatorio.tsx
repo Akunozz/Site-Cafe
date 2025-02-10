@@ -26,6 +26,7 @@ function BotaoPedido() {
   const [loading, setLoading] = useState(true); //tela carregamento
   const [mesSelecionado, setMesSelecionado] = useState("1"); // meses do filtro
   const [anoSelecionado, setAnoSelecionado] = useState("2024"); // anos do filtro
+  const [paginaAtual, setPaginaAtual] = useState(1)
 
   const meses = [
     { value: "1", label: "Janeiro" }, { value: "2", label: "Fevereiro" }, { value: "3", label: "Março" },
@@ -127,7 +128,13 @@ function BotaoPedido() {
               ))}
             </div>
           ) : pedidos.length > 0 ? (
-            <Tabela colunas={colunas} dados={pedidos} itensTabela={itensTabela} />
+            <Tabela 
+            colunas={colunas} 
+            dados={pedidos} 
+            itensTabela={itensTabela} 
+            paginaAtual={paginaAtual}
+            setPaginaAtual={setPaginaAtual}
+            />
           ) : (
             <p className="text-center text-gray-500">Nenhum pedido encontrado para este período.</p>
           )}
